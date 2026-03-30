@@ -1,0 +1,48 @@
+[project] # Update all fields in this section
+name = "mscape_template"  # Change this to your package - it must match module name in src
+dynamic = ["version"]  # Change the version in __init__.py in the package directory.
+description = "Short description here"
+authors = [{name = "Author name", email = "email.address@example.com"}]
+requires-python = ">=3.12"
+dependencies = ["pandas", "pyyaml", "climb-onyx-client"]
+
+[tool.setuptools.dynamic]
+version = {attr = "mscape_template.__version__"} # Add package name here to get version
+
+[project.optional-dependencies] # Dependencies for developers only - add more if required
+dev = ["ruff", "pytest", "pre-commit"]
+
+[build-system] # Leave this section
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project.scripts] # Update with main repo script here
+qc_sample = "mscape_template.mscape_script:main"
+
+[tool.ruff.lint] # Lint rules to follow - add or delete if required
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    # comprehesnions
+    "C4",
+    # pathlib
+    "PTH",
+]
+
+ignore = ["E501"] # Lint rules to ignore - add or remove as required
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.format]
+quote-style = "double"

@@ -1,0 +1,52 @@
+{
+  "id": 12607486,
+  "name": "protect-main",
+  "target": "branch",
+  "source_type": "Repository",
+  "source": "ukhsa-collaboration/mscape-template",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [],
+      "include": [
+        "~DEFAULT_BRANCH"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "non_fast_forward"
+    },
+    {
+      "type": "pull_request",
+      "parameters": {
+        "required_approving_review_count": 1,
+        "dismiss_stale_reviews_on_push": true,
+        "required_reviewers": [],
+        "require_last_push_approval": true,
+        "required_review_thread_resolution": false,
+        "allowed_merge_methods": [
+          "merge",
+          "squash",
+          "rebase"
+        ]
+      }
+    },
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "strict_required_status_checks_policy": true,
+        "do_not_enforce_on_create": false,
+        "required_status_checks": [
+          {
+            "context": "mscape_test_build_workflow"
+          }
+        ]
+      }
+    },
+    {
+      "type": "deletion"
+    }
+  ],
+  "bypass_actors": []
+}
