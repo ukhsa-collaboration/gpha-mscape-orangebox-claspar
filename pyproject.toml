@@ -1,13 +1,24 @@
 [project] # Update all fields in this section
-name = "mscape_template"  # Change this to your package - it must match module name in src
-dynamic = ["version"]  # Change the version in __init__.py in the package directory.
-description = "Short description here"
-authors = [{name = "Author name", email = "email.address@example.com"}]
+name = "ClasPar"
+dynamic = ["version"]
+description = "ClasPar: the friendly classifier parser that parses, filters and writes classifier results to analysis tables."
+authors = [{ name = "Jess Friedersdorff", email = "jess.friedersdorff@ukhsa.gov.uk" }]
 requires-python = ">=3.12"
-dependencies = ["pandas", "pyyaml", "climb-onyx-client"]
+dependencies = [
+    "pandas",
+    "pyyaml",
+    "onyx-analysis-helper@git+https://github.com/ukhsa-collaboration/onyx-analysis-helper.git",
+    "taxaplease@git+https://github.com/ukhsa-collaboration/gpha-mscape-taxaplease",
+    "profiler@https://github.com/ukhsa-collaboration/gpha-mscape-orangebox-profiler/archive/refs/tags/v1.0.0.tar.gz"]
 
 [tool.setuptools.dynamic]
-version = {attr = "mscape_template.__version__"} # Add package name here to get version
+version = { attr = "claspar.__version__" } # Add underscore separated repo name here
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"claspar.data" = ["*.yaml"]
 
 [project.optional-dependencies] # Dependencies for developers only - add more if required
 dev = ["ruff", "pytest", "pre-commit"]
@@ -17,7 +28,10 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project.scripts] # Update with main repo script here
-qc_sample = "mscape_template.mscape_script:main"
+claspar = "claspar.main:main"
+
+[project.urls]
+Homepage = "https://github.com/ukhsa-collaboration/gpha-mscape-orangebox-claspar"
 
 [tool.ruff.lint] # Lint rules to follow - add or delete if required
 select = [
@@ -39,7 +53,7 @@ select = [
     "PTH",
 ]
 
-ignore = ["E501"] # Lint rules to ignore - add or remove as required
+ignore = ["E501", "UP031"] # Lint rules to ignore - add or remove as required
 
 [tool.ruff]
 line-length = 120

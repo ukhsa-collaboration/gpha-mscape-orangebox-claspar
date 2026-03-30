@@ -21,5 +21,5 @@ repos:
       name: Check if climb ID pattern is present.
       types: ["file"]
       args: [--multiline]
-      entry: 'C-[A-F0-9]{5}'
+      entry: '[AC]-[A-F0-9]{5}'
       language: pygrep

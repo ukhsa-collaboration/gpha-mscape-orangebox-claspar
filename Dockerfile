@@ -4,4 +4,4 @@ ADD . /app
 WORKDIR /app
 RUN pip install .
 
-CMD ["qc_sample"]
+CMD ["claspar"]
