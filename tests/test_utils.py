@@ -108,7 +108,9 @@ def test_create_bacterial_analysis_fields():
         "pipeline_name": "ClasPar",
         "pipeline_version": __version__,
         "pipeline_url": "https://github.com/ukhsa-collaboration/gpha-mscape-orangebox-claspar",
-        "methods": ('{"stuff": 1, "profiler_version": "%s"}' % pv),
+        "methods": (
+            '{"stuff": 1, "profiler_version": "%s", "profile_tables_version": "profile_tables_testing.xlsx"}' % pv
+        ),
         "result": "Found some stuff here.",
         "result_metrics": '{"0": {"thing": 10, "type": "little"}, "1": {"thing": 10, "type": "big"}}',
         "server_records": ["ID_123456"],
@@ -118,6 +120,7 @@ def test_create_bacterial_analysis_fields():
         classifier="sylph",
         record_id="ID_123456",
         thresholds={"stuff": 1},
+        profile_table_name="profile_tables_testing.xlsx",
         headline_result="Found some stuff here.",
         results={0: {"thing": 10, "type": "little"}, 1: {"thing": 10, "type": "big"}},
         server="server",
