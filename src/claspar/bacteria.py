@@ -8,7 +8,7 @@ import logging
 from pathlib import Path
 
 import pandas as pd
-from profiler import get_profiles as profiler  # ty:ignore[unresolved-import]
+from profiler import get_profiles as profiler
 from taxaplease import TaxaPlease
 
 from claspar.utils import create_analysis_fields, write_df_to_csv
@@ -300,15 +300,18 @@ class KrakenBacteria:
         return headline_result, results, kraken_species, kraken_genus
 
     # Make analysis tables
-    def get_kraken_bacteria_analysis_table(self):
+    def get_kraken_bacteria_analysis_table(self, profile_table_name: str):
         """
         Pull together all the class attributes into the analysis table.
+
+        :param profile_table_name: Name of the profile table used; this acts as a version.
         """
         analysis_table, _ = create_analysis_fields(
             domain="bacteria",
             classifier="kraken",
             record_id=self.sample_id,
             thresholds=self.thresholds,
+            profile_table_name=profile_table_name,
             headline_result=self.headline_result,
             results=self.results,
             server=self.server,
@@ -531,15 +534,18 @@ class SylphBacteria:
 
         return headline_result, results, sylph_processed_df
 
-    def get_sylph_analysis_table(self):
+    def get_sylph_analysis_table(self, profile_table_name: str):
         """
         Pull together all the class attributes into the analysis table.
+
+        :param profile_table_name: Name of the profile table used; this acts as a version.
         """
         analysis_table, _ = create_analysis_fields(
             domain="bacteria",
             classifier="sylph",
             record_id=self.sample_id,
             thresholds=self.thresholds,
+            profile_table_name=profile_table_name,
             headline_result=self.headline_result,
             results=self.results,
             server=self.server,

@@ -156,9 +156,11 @@ class VirusClasPar:
 
         return headline_result, results, processed_va_df
 
-    def get_virus_analysis_table(self) -> oa.OnyxAnalysis:
+    def get_virus_analysis_table(self, profile_table_name: str) -> oa.OnyxAnalysis:
         """
         Pull together all the class attributes into the analysis table.
+
+        :param profile_table_name: Name of the profile table used; this acts as a version.
         """
 
         analysis_table, _ = create_analysis_fields(
@@ -166,6 +168,7 @@ class VirusClasPar:
             classifier="viralaligner",
             record_id=self.sample_id,
             thresholds=self.thresholds,
+            profile_table_name=profile_table_name,
             headline_result=self.headline_results,
             results=self.results,
             server=self.server,

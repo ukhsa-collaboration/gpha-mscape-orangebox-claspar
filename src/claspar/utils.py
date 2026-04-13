@@ -91,6 +91,7 @@ def create_analysis_fields(
     classifier: str,
     record_id: str,
     thresholds: dict[str, int | str],
+    profile_table_name: str,
     headline_result: str,
     results: dict,
     server: str,
@@ -101,6 +102,7 @@ def create_analysis_fields(
     :param classifier: the type of classifier being reported in the table (kraken or sylph)
     :param record_id: Climb ID for sample
     :param thresholds: Dictionary containing criteria used to filter
+    :param profile_table_name: Name of the profile tables file used to assign profiles. Acts as versioning.
     :param headline_result: Short description of main result
     :param results: Dictionary containing results
     :param server: Server code is running on, one of "server" or "synthscape"
@@ -110,6 +112,7 @@ def create_analysis_fields(
     """
     # Add the profiler version to the thresholds dict so it can be loaded into the methods
     thresholds["profiler_version"] = pv
+    thresholds["profile_tables_version"] = profile_table_name
 
     onyx_analysis = oa.OnyxAnalysis()  # set up class
     # Add analysis details
