@@ -395,8 +395,8 @@ class TestSylphBacteria:
     def test_get_sylph_analysis_table(self):
         analysis_table = self.sylph_class_instance_1.get_sylph_analysis_table()
         assert (p := analysis_table.pipeline_name) == "ClasPar", f'Expected pipeline name "ClasPar", got "{p}"'
-        assert (n := analysis_table.name) == "bacteria-classifier-parser", (
-            f'Expected name "bacteria-classifier-parser", got {n}'
+        assert (n := analysis_table.name) == "claspar-sylph-bacteria", (
+            f'Expected name "claspar-sylph-bacteria", got {n}'
         )
         assert "sylph" in (d := analysis_table.description), f'Expected "sylph" to be in the descritopn, got {d}'
 

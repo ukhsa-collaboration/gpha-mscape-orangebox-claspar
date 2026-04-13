@@ -90,7 +90,7 @@ class TestViralParser:
     def test_get_virus_analysis_table(self):
         analysis_table = self.test_class_instance.get_virus_analysis_table()
         assert (p := analysis_table.pipeline_name) == "ClasPar", f'Expected pipeline name "ClasPar", got "{p}"'
-        assert (n := analysis_table.name) == "virus-classifier-parser", (
+        assert (n := analysis_table.name) == "claspar-viralaligner-virus", (
             f'Expected name "virus-classifier-parser", got {n}'
         )
 

@@ -163,7 +163,7 @@ class VirusClasPar:
 
         analysis_table, _ = create_analysis_fields(
             domain="virus",
-            classifier="viral aligner",
+            classifier="viralaligner",
             record_id=self.sample_id,
             thresholds=self.thresholds,
             headline_result=self.headline_results,
