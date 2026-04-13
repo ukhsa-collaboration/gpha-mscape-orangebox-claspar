@@ -12,6 +12,7 @@ import pandas as pd
 import yaml
 from onyx import OnyxClient, OnyxConfig, OnyxEnv
 from onyx_analysis_helper import onyx_analysis_helper_functions as oa
+from profiler import __version__ as pv
 
 
 ##############
@@ -89,7 +90,7 @@ def create_analysis_fields(
     domain: str,
     classifier: str,
     record_id: str,
-    thresholds: dict[str, int],
+    thresholds: dict[str, int | str],
     headline_result: str,
     results: dict,
     server: str,
@@ -107,6 +108,9 @@ def create_analysis_fields(
     onyx_analysis: Class containing required fields for input to onyx analysis table.
     exitcode: Exit code for checks - will be 0 if all checks passed, 1 if any checks failed
     """
+    # Add the profiler version to the thresholds dict so it can be loaded into the methods
+    thresholds["profiler_version"] = pv
+
     onyx_analysis = oa.OnyxAnalysis()  # set up class
     # Add analysis details
     onyx_analysis.add_analysis_details(

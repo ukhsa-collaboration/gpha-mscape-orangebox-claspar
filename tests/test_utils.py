@@ -3,6 +3,7 @@ from datetime import datetime
 from importlib import resources
 
 import pandas as pd
+from profiler import __version__ as pv
 
 from claspar import __version__, utils
 
@@ -107,7 +108,7 @@ def test_create_bacterial_analysis_fields():
         "pipeline_name": "ClasPar",
         "pipeline_version": __version__,
         "pipeline_url": "https://github.com/ukhsa-collaboration/gpha-mscape-orangebox-claspar",
-        "methods": '{"stuff": 1}',
+        "methods": ('{"stuff": 1, "profiler_version": "%s"}' % pv),
         "result": "Found some stuff here.",
         "result_metrics": '{"0": {"thing": 10, "type": "little"}, "1": {"thing": 10, "type": "big"}}',
         "server_records": ["ID_123456"],
