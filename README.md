@@ -74,7 +74,7 @@ claspar --sample_id <ID> --output_dir <DIR> --server server --samplesheet <TSV F
 ## 📃 Inputs: 📃
 | Argument | Required | Description |
 | -------- | ------- | ------- |
-| --sample_id, -s | Yes | Climb-ID for sample |
+| --sample_id, -i | Yes | Climb-ID for sample |
 | --output_dir, -o | Yes |  Path to directory where results will be saved to. The directory is made if it doesn't exist already. |
 | --config, -c | No |  Path to yaml file with filtering thresholds. Default can be seen in src/claspar/data/filter_thresholds.yaml |
 | --server, -s | Yes  | Must be one of: [server, synthscape]. Specify server code is being run on - helpful if developing on synthscape and running on  server|
