@@ -103,7 +103,10 @@ def test_create_bacterial_analysis_fields():
     expected_analysis_table_dict = {
         "identifiers": [],
         "name": "claspar-sylph-bacteria",
-        "description": "This is an analysis to parse and filter the bacteria classifications from sylph",
+        "description": (
+            "This is an analysis to parse and filter the bacteria classifications from sylph and look up "
+            "the clinical profiles for classified taxa."
+        ),
         "analysis_date": today,
         "pipeline_name": "ClasPar",
         "pipeline_version": __version__,

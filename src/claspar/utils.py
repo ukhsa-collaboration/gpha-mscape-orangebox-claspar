@@ -118,7 +118,8 @@ def create_analysis_fields(
     # Add analysis details
     onyx_analysis.add_analysis_details(
         analysis_name=f"claspar-{classifier}-{domain}",
-        analysis_description=f"This is an analysis to parse and filter the {domain} classifications from {classifier}",
+        analysis_description=f"This is an analysis to parse and filter the {domain} classifications from {classifier} "
+        f"and look up the clinical profiles for classified taxa.",
     )
     # Add metadata about the pipeline/package
     onyx_analysis.add_package_metadata(package_name="claspar")
