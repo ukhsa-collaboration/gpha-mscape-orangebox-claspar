@@ -110,7 +110,7 @@ def create_analysis_fields(
     onyx_analysis = oa.OnyxAnalysis()  # set up class
     # Add analysis details
     onyx_analysis.add_analysis_details(
-        analysis_name=f"{domain}-classifier-parser",
+        analysis_name=f"claspar-{classifier}-{domain}",
         analysis_description=f"This is an analysis to parse and filter the {domain} classifications from {classifier}",
     )
     # Add metadata about the pipeline/package

@@ -101,7 +101,7 @@ def test_create_bacterial_analysis_fields():
     today = datetime.today().strftime("%Y-%m-%d")
     expected_analysis_table_dict = {
         "identifiers": [],
-        "name": "bacteria-classifier-parser",
+        "name": "claspar-sylph-bacteria",
         "description": "This is an analysis to parse and filter the bacteria classifications from sylph",
         "analysis_date": today,
         "pipeline_name": "ClasPar",
