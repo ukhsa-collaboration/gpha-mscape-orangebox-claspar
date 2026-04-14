@@ -16,14 +16,14 @@ file can be defined).
 
 It uses the OnyxAnalysisHelper to write all the results to json files, was well as all the results to csv files.
 
-It uses the Profiler codebase (v1.0.0) to lookup classified taxa in the clinical profile tables.
+It uses the Profiler codebase (pinned to v1.0.0) to lookup classified taxa in the clinical profile tables.
 
 ## 🔧 Installation for Command Line Use 🔧
 1) Set up environment - It is recommended that you install claspar into a suitable environment. For example:
 
 Create a new conda environment
 ```
-conda env create -n claspar
+conda create -n claspar
 conda activate claspar
 ```
 
@@ -39,7 +39,7 @@ __or:__
 2b.) Install directly into the environment using pip:
 
 ```
-pip install https://github.com/ukhsa-collaboration/gpha-mscape-orangebox-claspar.git
+pip install git+https://github.com/ukhsa-collaboration/gpha-mscape-orangebox-claspar.git
 ```
 
 
@@ -58,7 +58,7 @@ Be sure to install the pre-commit hooks in the repo if developing and pushing to
 On the commandline, once installed, run:
 
 ```
-claspar --sample_id <ID> --output_dir <DIR> --server server --profile-tables <PATH-TO-PROFILES-TABLE.xlsx>
+claspar --sample_id <ID> --output_dir <DIR> --server <server> --profile-tables <PATH-TO-PROFILES-TABLE.xlsx>
 ```
 Where `ID` is a valid sample ID and `DIR` is a valid output directory. This method includes an Onyx call, and therefore
 requires all the necessary credentials and connectivity. There is a test profile table in the tests/test_profile_tables directory.
@@ -74,7 +74,7 @@ claspar --sample_id <ID> --output_dir <DIR> --server server --samplesheet <TSV F
 ## 📃 Inputs: 📃
 | Argument | Required | Description |
 | -------- | ------- | ------- |
-| --sample_id, -s | Yes | Climb-ID for sample |
+| --sample_id, -i | Yes | Climb-ID for sample |
 | --output_dir, -o | Yes |  Path to directory where results will be saved to. The directory is made if it doesn't exist already. |
 | --config, -c | No |  Path to yaml file with filtering thresholds. Default can be seen in src/claspar/data/filter_thresholds.yaml |
 | --server, -s | Yes  | Must be one of: [server, synthscape]. Specify server code is being run on - helpful if developing on synthscape and running on  server|

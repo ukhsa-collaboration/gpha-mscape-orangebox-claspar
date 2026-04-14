@@ -198,7 +198,7 @@ class TestKrakenBacteria:
         print(f"Saving to {tmp_path}")
 
     def test_write_to_json(self, tmp_path):
-        self.kraken_class_instance.get_kraken_bacteria_analysis_table()
+        self.kraken_class_instance.get_kraken_bacteria_analysis_table("test_profile_table.xlsx")
 
         filename = tmp_path / f"{self.kraken_class_instance.sample_id}_kraken_bacteria_analysis_fields.json"
         self.kraken_class_instance.analysis_table.write_analysis_to_json(filename)
@@ -252,7 +252,7 @@ class TestNoKrakenBacteria:
         print(f"Saving to {tmp_path}")
 
     def test_write_to_json(self, tmp_path):
-        self.kraken_class_instance.get_kraken_bacteria_analysis_table()
+        self.kraken_class_instance.get_kraken_bacteria_analysis_table("test_profile_table.xlsx")
 
         filename = tmp_path / f"{self.kraken_class_instance.sample_id}_kraken_bacteria_analysis_fields.json"
         self.kraken_class_instance.analysis_table.write_analysis_to_json(filename)
@@ -393,19 +393,19 @@ class TestSylphBacteria:
         assert sylph_processed_df.shape == (3, 26)  # 3 processed taxa
 
     def test_get_sylph_analysis_table(self):
-        analysis_table = self.sylph_class_instance_1.get_sylph_analysis_table()
+        analysis_table = self.sylph_class_instance_1.get_sylph_analysis_table("test_profile_table.xlsx")
         assert (p := analysis_table.pipeline_name) == "ClasPar", f'Expected pipeline name "ClasPar", got "{p}"'
-        assert (n := analysis_table.name) == "bacteria-classifier-parser", (
-            f'Expected name "bacteria-classifier-parser", got {n}'
+        assert (n := analysis_table.name) == "claspar-sylph-bacteria", (
+            f'Expected name "claspar-sylph-bacteria", got {n}'
         )
-        assert "sylph" in (d := analysis_table.description), f'Expected "sylph" to be in the descritopn, got {d}'
+        assert "sylph" in (d := analysis_table.description), f'Expected "sylph" to be in the description, got {d}'
 
     def test_save_outputs_to_csv(self, tmp_path):
         self.sylph_class_instance_1.save_outputs_to_csv(tmp_path)
         print(f"Saving to {tmp_path}")
 
     def test_write_to_json(self, tmp_path):
-        self.sylph_class_instance_1.get_sylph_analysis_table()
+        self.sylph_class_instance_1.get_sylph_analysis_table("test_profile_table.xlsx")
 
         filename = tmp_path / f"{self.sylph_class_instance_1.sample_id}_sylph_analysis_fields.json"
         self.sylph_class_instance_1.analysis_table.write_analysis_to_json(filename)
@@ -551,7 +551,7 @@ class TestNoSylphBacteria:
         print(f"Saving to {tmp_path}")
 
     def test_write_to_json(self, tmp_path):
-        self.sylph_class_instance.get_sylph_analysis_table()
+        self.sylph_class_instance.get_sylph_analysis_table("test_profile_table.xlsx")
 
         filename = tmp_path / f"{self.sylph_class_instance.sample_id}_sylph_analysis_fields.json"
         self.sylph_class_instance.analysis_table.write_analysis_to_json(filename)

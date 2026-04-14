@@ -88,9 +88,9 @@ class TestViralParser:
         assert len(results) == 4
 
     def test_get_virus_analysis_table(self):
-        analysis_table = self.test_class_instance.get_virus_analysis_table()
+        analysis_table = self.test_class_instance.get_virus_analysis_table("test_profile_table.xlsx")
         assert (p := analysis_table.pipeline_name) == "ClasPar", f'Expected pipeline name "ClasPar", got "{p}"'
-        assert (n := analysis_table.name) == "virus-classifier-parser", (
+        assert (n := analysis_table.name) == "claspar-viralaligner-virus", (
             f'Expected name "virus-classifier-parser", got {n}'
         )
 
@@ -99,7 +99,7 @@ class TestViralParser:
         print(f"Saving to {tmp_path}")
 
     def test_write_to_json(self, tmp_path):
-        self.test_class_instance.get_virus_analysis_table()
+        self.test_class_instance.get_virus_analysis_table("test_profile_table.xlsx")
         filename = tmp_path / f"{self.test_class_instance.sample_id}_viral_aligner_analysis_fields.json"
         self.test_class_instance.analysis_table.write_analysis_to_json(filename)
         print(f"Saving json to {filename}")
@@ -145,7 +145,7 @@ class TestNoVirus:
         print(f"Saving broken data csvs {tmp_path}")
 
     def test_write_to_json(self, tmp_path):
-        self.test_no_data_instance.get_virus_analysis_table()
+        self.test_no_data_instance.get_virus_analysis_table("test_profile_table.xlsx")
 
         filename = tmp_path / f"{self.test_no_data_instance.sample_id}_no_viral_aligner_analysis_fields.json"
         self.test_no_data_instance.analysis_table.write_analysis_to_json(filename)
@@ -188,14 +188,14 @@ class TestBrokenInput:
 
     def test_nothing_breaks_if_missing_column(self):
         assert (r := self.test_broken_data_instance.results) == {}, f"Expected empty results dict, got {r}"
-        self.test_broken_data_instance.get_virus_analysis_table()
+        self.test_broken_data_instance.get_virus_analysis_table("test_profile_table.xlsx")
 
     def test_save_outputs_to_csv(self, tmp_path):
         self.test_broken_data_instance.save_outputs_to_csv(tmp_path)
         print(f"Saving broken data csvs {tmp_path}")
 
     def test_write_to_json(self, tmp_path):
-        self.test_broken_data_instance.get_virus_analysis_table()
+        self.test_broken_data_instance.get_virus_analysis_table("test_profile_table.xlsx")
 
         filename = tmp_path / f"{self.test_broken_data_instance.sample_id}_broken_viral_aligner_analysis_fields.json"
         self.test_broken_data_instance.analysis_table.write_analysis_to_json(filename)

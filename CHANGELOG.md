@@ -1,3 +1,10 @@
+Claspar v2.0.1
+2 small features added that modify the analysis table.
+- added version of Profiler and the profiles table file used to the methods section of analysis tables
+- changed the 'name' field in the analysis table to be more descriptive (now reads claspar-{classifier}-{domain} where classifier is viralaligner/sylph/kraken and domain is virus/bacteria).
+
+
+
 Claspar v2.0.0
 
 BREAKING CHANGE - must now give the clinical profile tables file to claspar as argument.

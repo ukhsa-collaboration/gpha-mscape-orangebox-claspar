@@ -12,6 +12,7 @@ import pandas as pd
 import yaml
 from onyx import OnyxClient, OnyxConfig, OnyxEnv
 from onyx_analysis_helper import onyx_analysis_helper_functions as oa
+from profiler import __version__ as pv
 
 
 ##############
@@ -89,7 +90,8 @@ def create_analysis_fields(
     domain: str,
     classifier: str,
     record_id: str,
-    thresholds: dict[str, int],
+    thresholds: dict[str, int | str],
+    profile_table_name: str,
     headline_result: str,
     results: dict,
     server: str,
@@ -100,6 +102,7 @@ def create_analysis_fields(
     :param classifier: the type of classifier being reported in the table (kraken or sylph)
     :param record_id: Climb ID for sample
     :param thresholds: Dictionary containing criteria used to filter
+    :param profile_table_name: Name of the profile tables file used to assign profiles. Acts as versioning.
     :param headline_result: Short description of main result
     :param results: Dictionary containing results
     :param server: Server code is running on, one of "server" or "synthscape"
@@ -107,11 +110,16 @@ def create_analysis_fields(
     onyx_analysis: Class containing required fields for input to onyx analysis table.
     exitcode: Exit code for checks - will be 0 if all checks passed, 1 if any checks failed
     """
+    # Add the profiler version to the thresholds dict so it can be loaded into the methods
+    thresholds["profiler_version"] = pv
+    thresholds["profile_tables_version"] = profile_table_name
+
     onyx_analysis = oa.OnyxAnalysis()  # set up class
     # Add analysis details
     onyx_analysis.add_analysis_details(
-        analysis_name=f"{domain}-classifier-parser",
-        analysis_description=f"This is an analysis to parse and filter the {domain} classifications from {classifier}",
+        analysis_name=f"claspar-{classifier}-{domain}",
+        analysis_description=f"This is an analysis to parse and filter the {domain} classifications from {classifier} "
+        f"and look up the clinical profiles for classified taxa.",
     )
     # Add metadata about the pipeline/package
     onyx_analysis.add_package_metadata(package_name="claspar")

@@ -201,9 +201,12 @@ def main():
             return 1
 
         # Set up profile lookup dict:
-        profiles_dict = profiler.make_profiles_dict(args.profile_table_spreadsheet_path)
-
-        tp = TaxaPlease(database=args.database_path) if args.database_path else TaxaPlease()
+        profile_table_spreadsheet_path = Path(args.profile_table_spreadsheet_path)
+        profiles_dict: dict[str, dict[int, str]] = profiler.make_profiles_dict(profile_table_spreadsheet_path)
+        # Get name of profile tables file - for versioning in the analysis tables
+        profile_tables_name: str = str(profile_table_spreadsheet_path.name)
+        # Set up taxaplease instance
+        tp: TaxaPlease = TaxaPlease(database=args.database_path) if args.database_path else TaxaPlease()
 
         ####################
         # The Actual Thing #
@@ -229,7 +232,7 @@ def main():
         )
 
         # Get the analysis table:
-        kraken_bacterial_analysis_table = kraken_bacteria_parser.get_kraken_bacteria_analysis_table()
+        kraken_bacterial_analysis_table = kraken_bacteria_parser.get_kraken_bacteria_analysis_table(profile_tables_name)
 
         # All good so far, let's write analysis table to json:
         kraken_bacteria_json_path = (
@@ -263,7 +266,7 @@ def main():
         )
 
         # Get the analysis table:
-        sylph_analysis_table = sylph_parser.get_sylph_analysis_table()
+        sylph_analysis_table = sylph_parser.get_sylph_analysis_table(profile_tables_name)
 
         # All good so far, let's write analysis table to json:
         sylph_json_path = Path(args.output_dir) / f"{args.sample_id}.claspar-sylph.analysis_fields.json"
@@ -293,7 +296,7 @@ def main():
             server=args.server,
         )
 
-        viral_aligner_analysis_table = viral_aligner.get_virus_analysis_table()
+        viral_aligner_analysis_table = viral_aligner.get_virus_analysis_table(profile_tables_name)
 
         # All good so far, let's write analysis table to json:
         viral_aligner_json_path = Path(args.output_dir) / f"{args.sample_id}.claspar-viralaligner.analysis_fields.json"
