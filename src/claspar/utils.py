@@ -12,7 +12,7 @@ import pandas as pd
 import yaml
 from onyx import OnyxClient, OnyxConfig, OnyxEnv
 from onyx_analysis_helper import onyx_analysis_helper_functions as oa
-from profiler import __version__ as pv
+from pandas.core.frame import DataFrame
 
 
 ##############
@@ -91,7 +91,7 @@ def create_analysis_fields(
     classifier: str,
     record_id: str,
     thresholds: dict[str, int | str],
-    profile_table_name: str,
+    tool_versions: dict,
     headline_result: str,
     results: dict,
     server: str,
@@ -102,7 +102,7 @@ def create_analysis_fields(
     :param classifier: the type of classifier being reported in the table (kraken or sylph)
     :param record_id: Climb ID for sample
     :param thresholds: Dictionary containing criteria used to filter
-    :param profile_table_name: Name of the profile tables file used to assign profiles. Acts as versioning.
+    :param tool_versions: dict of tools, databases, files etc and their versions.
     :param headline_result: Short description of main result
     :param results: Dictionary containing results
     :param server: Server code is running on, one of "server" or "synthscape"
@@ -110,10 +110,6 @@ def create_analysis_fields(
     onyx_analysis: Class containing required fields for input to onyx analysis table.
     exitcode: Exit code for checks - will be 0 if all checks passed, 1 if any checks failed
     """
-    # Add the profiler version to the thresholds dict so it can be loaded into the methods
-    thresholds["profiler_version"] = pv
-    thresholds["profile_tables_version"] = profile_table_name
-
     onyx_analysis = oa.OnyxAnalysis()  # set up class
     # Add analysis details
     onyx_analysis.add_analysis_details(
@@ -124,7 +120,9 @@ def create_analysis_fields(
     # Add metadata about the pipeline/package
     onyx_analysis.add_package_metadata(package_name="claspar")
     # Check that the methods were parsed by the class
-    methods_fail = onyx_analysis.add_methods(methods_dict=thresholds)
+    methods_fail = onyx_analysis.add_methods(
+        sample_id=record_id, server_name=server, methods_dict=thresholds, tool_versions=tool_versions
+    )
     # Check that the results were parsed by the class
     results_fail = onyx_analysis.add_results(top_result=headline_result, results_dict=results)
     # Add info about sample and server (server/synthscape)
@@ -156,7 +154,7 @@ def read_samplesheet(path_to_samplesheet: Path | str) -> tuple[list[pd.DataFrame
     the sylph results and the classifier calls. Note that any of these could be empty dataframes!
     """
     exitcode = 0
-    samplesheet_df = pd.read_csv(path_to_samplesheet, sep="\t")
+    samplesheet_df: DataFrame = pd.read_csv(path_to_samplesheet, sep="\t")
     try:
         json_str = samplesheet_df["full_Onyx_json"].iloc[0]
     except KeyError as k:
