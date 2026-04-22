@@ -413,7 +413,7 @@ class TestSylphBacteria:
         assert sylph_processed_df.shape == (3, 26)  # 3 processed taxa
 
     def test_get_sylph_analysis_table(self):
-        analysis_table = self.sylph_class_instance_1.get_sylph_analysis_table("test_profile_table.xlsx")
+        analysis_table = self.sylph_class_instance_1.get_sylph_analysis_table(tool_versions)
         assert (p := analysis_table.pipeline_name) == "ClasPar", f'Expected pipeline name "ClasPar", got "{p}"'
         assert (n := analysis_table.name) == "claspar-sylph-bacteria", (
             f'Expected name "claspar-sylph-bacteria", got {n}'

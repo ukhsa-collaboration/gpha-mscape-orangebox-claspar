@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 from importlib import resources
+from unittest.mock import patch
 
 import pandas as pd
 from profiler import __version__ as pv
@@ -98,9 +99,32 @@ def test_one_column_samplesheet(tmp_path, caplog):
         )
 
 
-def test_create_bacterial_analysis_fields():
+MOCK_ONYX_RECORD: dict[str, str] = {
+    "climb-id": "ID-123456",
+    "site": "test",
+    "published_date": "2026-01-01",
+    "classifier_version": "1.0.0",
+    "classifier_db_date": "1970-01-01",
+    "ncbi_taxonomy_date": "1970-01-01",
+    "scylla_version": "1.0.0",
+    "sylph_db_version": "1.0.0",
+    "alignment_db_version": "1.0.0",
+}
+
+
+@patch("onyx_analysis_helper.onyx_analysis_helper_functions.OnyxClient.get")
+def test_create_bacterial_analysis_fields(mock_query):
+    # First mock the onyx query results.
+    mock_query.return_value = MOCK_ONYX_RECORD
+
+    # Create the tool versions dict to add.
+    tool_versions = {"claspar": __version__, "profiler": pv}
+
+    # Set date today
     today = datetime.today().strftime("%Y-%m-%d")
-    expected_analysis_table_dict = {
+
+    # Set the expected analysis table dict:
+    expected_analysis_table: dict[str, dict | list[dict] | str | list[str]] = {
         "identifiers": [],
         "name": "claspar-sylph-bacteria",
         "description": (
@@ -111,21 +135,33 @@ def test_create_bacterial_analysis_fields():
         "pipeline_name": "ClasPar",
         "pipeline_version": __version__,
         "pipeline_url": "https://github.com/ukhsa-collaboration/gpha-mscape-orangebox-claspar",
-        "methods": (
-            '{"stuff": 1, "profiler_version": "%s", "profile_tables_version": "profile_tables_testing.xlsx"}' % pv
-        ),
+        "methods": {
+            "versions": [
+                {"name": "classifier_version", "version": "1.0.0"},
+                {"name": "classifier_db_date", "version": "1970-01-01"},
+                {"name": "ncbi_taxonomy_date", "version": "1970-01-01"},
+                {"name": "scylla_version", "version": "1.0.0"},
+                {"name": "sylph_db_version", "version": "1.0.0"},
+                {"name": "alignment_db_version", "version": "1.0.0"},
+                {"name": "claspar", "version": "2.0.1"},
+                {"name": "profiler", "version": "1.0.0"},
+            ],
+            "thresholds": {"stuff": 1},
+        },
         "result": "Found some stuff here.",
-        "result_metrics": '{"0": {"thing": 10, "type": "little"}, "1": {"thing": 10, "type": "big"}}',
-        "server_records": ["ID_123456"],
+        "result_metrics": {"0": {"thing": 10, "type": "little"}, "1": {"thing": 10, "type": "big"}},
+        "synthscape_records": ["ID_123456"],
     }
-    onyx_analysis_table, exitcode = utils.create_analysis_fields(
+
+    actual_analysis_table, exitcode = utils.create_analysis_fields(
         domain="bacteria",
         classifier="sylph",
         record_id="ID_123456",
-        thresholds={"stuff": 1},
-        profile_table_name="profile_tables_testing.xlsx",
+        thresholds_dict={"stuff": 1},
+        tool_versions=tool_versions,
         headline_result="Found some stuff here.",
-        results={0: {"thing": 10, "type": "little"}, 1: {"thing": 10, "type": "big"}},
-        server="server",
+        results={"0": {"thing": 10, "type": "little"}, "1": {"thing": 10, "type": "big"}},
+        server="synthscape",
     )
-    assert onyx_analysis_table.__dict__ == expected_analysis_table_dict
+
+    assert actual_analysis_table.__dict__ == expected_analysis_table

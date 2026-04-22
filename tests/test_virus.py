@@ -103,7 +103,7 @@ class TestViralParser:
         assert len(results) == 4
 
     def test_get_virus_analysis_table(self):
-        analysis_table = self.test_class_instance.get_virus_analysis_table("test_profile_table.xlsx")
+        analysis_table = self.test_class_instance.get_virus_analysis_table(tool_versions)
         assert (p := analysis_table.pipeline_name) == "ClasPar", f'Expected pipeline name "ClasPar", got "{p}"'
         assert (n := analysis_table.name) == "claspar-viralaligner-virus", (
             f'Expected name "virus-classifier-parser", got {n}'
@@ -209,8 +209,8 @@ class TestBrokenInput:
         )
 
     def test_nothing_breaks_if_missing_column(self):
+        self.test_broken_data_instance.get_virus_analysis_table(tool_versions)
         assert (r := self.test_broken_data_instance.results) == {}, f"Expected empty results dict, got {r}"
-        self.test_broken_data_instance.get_virus_analysis_table("test_profile_table.xlsx")
 
     def test_save_outputs_to_csv(self, tmp_path):
         self.test_broken_data_instance.save_outputs_to_csv(tmp_path)
