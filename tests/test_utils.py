@@ -4,7 +4,7 @@ from importlib import resources
 from unittest.mock import patch
 
 import pandas as pd
-from profiler import __version__ as pv
+from profiler import __version__ as profiler_version
 
 from claspar import __version__, utils
 
@@ -13,6 +13,9 @@ pd.set_option("display.max_columns", None)
 pd.set_option("display.max_rows", None)
 
 LOGGER = logging.getLogger(__name__)
+
+# Create the tool versions dict to add.
+tool_versions = {"claspar": __version__, "profiler": profiler_version}
 
 
 def test_read_config_file():
@@ -117,9 +120,6 @@ def test_create_bacterial_analysis_fields(mock_query):
     # First mock the onyx query results.
     mock_query.return_value = MOCK_ONYX_RECORD
 
-    # Create the tool versions dict to add.
-    tool_versions = {"claspar": __version__, "profiler": pv}
-
     # Set date today
     today = datetime.today().strftime("%Y-%m-%d")
 
@@ -143,8 +143,8 @@ def test_create_bacterial_analysis_fields(mock_query):
                 {"name": "scylla_version", "version": "1.0.0"},
                 {"name": "sylph_db_version", "version": "1.0.0"},
                 {"name": "alignment_db_version", "version": "1.0.0"},
-                {"name": "claspar", "version": "2.0.1"},
-                {"name": "profiler", "version": "1.0.0"},
+                {"name": "claspar", "version": __version__},
+                {"name": "profiler", "version": profiler_version},
             ],
             "thresholds": {"stuff": 1},
         },
