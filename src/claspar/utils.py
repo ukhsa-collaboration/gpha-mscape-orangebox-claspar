@@ -90,7 +90,7 @@ def create_analysis_fields(
     domain: str,
     classifier: str,
     record_id: str,
-    thresholds: dict[str, int | str],
+    thresholds_dict: dict[str, int | str],
     tool_versions: dict,
     headline_result: str,
     results: dict,
@@ -101,7 +101,8 @@ def create_analysis_fields(
     :param domain: str, one of 'bacteria', 'virus', 'fungi' etc
     :param classifier: the type of classifier being reported in the table (kraken or sylph)
     :param record_id: Climb ID for sample
-    :param thresholds: Dictionary containing criteria used to filter
+    :param thresholds_dict: Dictionary containing criteria used to filter, which gets added to the
+    methods field as 'thresholds': {thresholds_dict}
     :param tool_versions: dict of tools, databases, files etc and their versions.
     :param headline_result: Short description of main result
     :param results: Dictionary containing results
@@ -120,9 +121,13 @@ def create_analysis_fields(
     # Add metadata about the pipeline/package
     onyx_analysis.add_package_metadata(package_name="claspar")
     # Check that the methods were parsed by the class
-    methods_fail = onyx_analysis.add_methods(
-        sample_id=record_id, server_name=server, methods_dict=thresholds, tool_versions=tool_versions
-    )
+    methods_fail = onyx_analysis.add_methods(sample_id=record_id, server_name=server, tool_versions=tool_versions)
+
+    # Reformat the thresholds_dict:
+    methods_dict: dict[str, dict[str, int | str]] = {"thresholds": thresholds_dict}
+    # Check that additional methods are parsed by the class
+    other_methods_fail = onyx_analysis.add_other_methods(methods_dict)
+
     # Check that the results were parsed by the class
     results_fail = onyx_analysis.add_results(top_result=headline_result, results_dict=results)
     # Add info about sample and server (server/synthscape)
@@ -131,7 +136,7 @@ def create_analysis_fields(
     required_field_fail, attribute_fail = onyx_analysis.check_analysis_object(publish_analysis=False)
     # If any fail, raise exit code.
     if any(  # noqa: SIM108
-        [methods_fail, results_fail, required_field_fail, attribute_fail]
+        [methods_fail, other_methods_fail, results_fail, required_field_fail, attribute_fail]
     ):  # noqa SIM108
         exitcode = 1
     else:

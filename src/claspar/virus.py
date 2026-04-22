@@ -167,7 +167,7 @@ class VirusClasPar:
             domain="virus",
             classifier="viralaligner",
             record_id=self.sample_id,
-            thresholds=self.thresholds,
+            thresholds_dict=self.thresholds,
             tool_versions=tool_versions,
             headline_result=self.headline_results,
             results=self.results,
