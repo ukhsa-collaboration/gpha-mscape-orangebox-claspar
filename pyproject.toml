@@ -7,8 +7,8 @@ requires-python = ">=3.12"
 dependencies = [
     "pandas",
     "pyyaml",
-    "onyx-analysis-helper@git+https://github.com/ukhsa-collaboration/onyx-analysis-helper.git",
-    "taxaplease@git+https://github.com/ukhsa-collaboration/gpha-mscape-taxaplease",
+    "onyx-analysis-helper@git+https://github.com/ukhsa-collaboration/onyx-analysis-helper.git:0.4.0",
+    "taxaplease@git+https://github.com/ukhsa-collaboration/gpha-mscape-taxaplease:2.2.0",
     "profiler@https://github.com/ukhsa-collaboration/gpha-mscape-orangebox-profiler/archive/refs/tags/v1.0.0.tar.gz"]
 
 [tool.setuptools.dynamic]
