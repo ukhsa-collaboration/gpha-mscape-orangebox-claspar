@@ -121,12 +121,14 @@ def create_analysis_fields(
     # Add metadata about the pipeline/package
     onyx_analysis.add_package_metadata(package_name="claspar")
     # Check that the methods were parsed by the class
-    methods_fail = onyx_analysis.add_methods(sample_id=record_id, server_name=server, tool_versions=tool_versions)
+    methods_versions_fail = onyx_analysis.add_versions_to_methods(
+        include_onyx_versions=True, sample_id=record_id, server_name=server, tool_versions=tool_versions
+    )
 
     # Reformat the thresholds_dict:
     methods_dict: dict[str, dict[str, int | str]] = {"thresholds": thresholds_dict}
     # Check that additional methods are parsed by the class
-    other_methods_fail = onyx_analysis.add_other_methods(methods_dict)
+    methods_fail = onyx_analysis.add_methods(methods_dict)
 
     # Check that the results were parsed by the class
     results_fail = onyx_analysis.add_results(top_result=headline_result, results_dict=results)
@@ -135,12 +137,7 @@ def create_analysis_fields(
     # Check the final object using the helper method
     required_field_fail, attribute_fail = onyx_analysis.check_analysis_object(publish_analysis=False)
     # If any fail, raise exit code.
-    if any(  # noqa: SIM108
-        [methods_fail, other_methods_fail, results_fail, required_field_fail, attribute_fail]
-    ):  # noqa SIM108
-        exitcode = 1
-    else:
-        exitcode = 0
+    exitcode = 1 if any([methods_fail, methods_versions_fail, results_fail, required_field_fail, attribute_fail]) else 0
 
     return onyx_analysis, exitcode
 
