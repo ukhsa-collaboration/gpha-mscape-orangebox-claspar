@@ -9,13 +9,13 @@ import logging
 import sys
 from datetime import datetime
 from importlib import resources
+from importlib.metadata import version
 from pathlib import Path
 
-from profiler import __version__ as profiler_version
 from profiler import get_profiles as profiler
 from taxaplease import TaxaPlease
 
-from claspar import __version__, bacteria, virus
+from claspar import bacteria, virus
 from claspar.utils import ClasParError, get_input_data, read_config_file, read_samplesheet, setup_outdir
 
 today = datetime.today().strftime("%Y-%m-%d")
@@ -27,7 +27,7 @@ def get_args():
         prog="claspar",
         description=f"""
         ClasPar: the friendly classifier parser that parses, filters and writes classifier results to analysis tables.
-        Version = {__version__}
+        Version = {version("claspar")}
         """,
     )
     parser.add_argument("--sample_id", "-i", dest="sample_id", type=str, required=True, help="Climb-ID for sample.")
@@ -89,7 +89,7 @@ def get_args():
             """
         ),
     )
-    parser.add_argument("--version", "-v", action="version", version=f"%(prog)s - version {__version__}")
+    parser.add_argument("--version", "-v", action="version", version=f"%(prog)s - version {version('claspar')}")
 
     return parser
 
@@ -210,8 +210,9 @@ def main():
 
         # Set up dict of versions to record in the analysis tables later:
         tool_versions: dict[str, str | None] = {}
-        tool_versions["claspar_version"] = __version__
-        tool_versions["profiler_version"] = profiler_version
+        tool_versions["claspar_version"] = version("claspar")
+        tool_versions["profiler_version"] = version("profiler")
+        tool_versions["taxaplease_version"] = version("taxaplease")
         tool_versions["profile_tables_name"] = str(profile_table_spreadsheet_path.name)
         tool_versions["taxaplease_database"] = tp.get_current_taxonomy_url_from_database().split("/")[-1]
 
