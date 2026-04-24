@@ -1,15 +1,30 @@
 import json
+from unittest.mock import patch
 
 import pandas as pd
 import pytest
 from taxaplease import TaxaPlease
 
-from claspar import virus
+from claspar import __version__, virus
 
 tp = TaxaPlease()
+tool_versions: dict[str, str] = {"claspar": __version__}
 
 pd.set_option("display.max_columns", None)
 pd.set_option("display.max_rows", None)
+
+
+MOCK_ONYX_RECORD: dict[str, str] = {
+    "climb-id": "ID-123456",
+    "site": "test",
+    "published_date": "2026-01-01",
+    "classifier_version": "1.0.0",
+    "classifier_db_date": "1970-01-01",
+    "ncbi_taxonomy_date": "1970-01-01",
+    "scylla_version": "1.0.0",
+    "sylph_db_version": "1.0.0",
+    "alignment_db_version": "1.0.0",
+}
 
 
 @pytest.fixture(scope="module")
@@ -88,7 +103,7 @@ class TestViralParser:
         assert len(results) == 4
 
     def test_get_virus_analysis_table(self):
-        analysis_table = self.test_class_instance.get_virus_analysis_table("test_profile_table.xlsx")
+        analysis_table = self.test_class_instance.get_virus_analysis_table(tool_versions)
         assert (p := analysis_table.pipeline_name) == "ClasPar", f'Expected pipeline name "ClasPar", got "{p}"'
         assert (n := analysis_table.name) == "claspar-viralaligner-virus", (
             f'Expected name "virus-classifier-parser", got {n}'
@@ -98,8 +113,12 @@ class TestViralParser:
         self.test_class_instance.save_outputs_to_csv(tmp_path)
         print(f"Saving to {tmp_path}")
 
-    def test_write_to_json(self, tmp_path):
-        self.test_class_instance.get_virus_analysis_table("test_profile_table.xlsx")
+    @patch("onyx_analysis_helper.onyx_analysis_helper_functions.OnyxClient.get")
+    def test_write_to_json(self, mock_query, tmp_path):
+        # First mock the onyx query results.
+        mock_query.return_value = MOCK_ONYX_RECORD
+
+        self.test_class_instance.get_virus_analysis_table(tool_versions)
         filename = tmp_path / f"{self.test_class_instance.sample_id}_viral_aligner_analysis_fields.json"
         self.test_class_instance.analysis_table.write_analysis_to_json(filename)
         print(f"Saving json to {filename}")
@@ -144,8 +163,11 @@ class TestNoVirus:
         self.test_no_data_instance.save_outputs_to_csv(tmp_path)
         print(f"Saving broken data csvs {tmp_path}")
 
-    def test_write_to_json(self, tmp_path):
-        self.test_no_data_instance.get_virus_analysis_table("test_profile_table.xlsx")
+    @patch("onyx_analysis_helper.onyx_analysis_helper_functions.OnyxClient.get")
+    def test_write_to_json(self, mock_query, tmp_path):
+        # First mock the onyx query results.
+        mock_query.return_value = MOCK_ONYX_RECORD
+        self.test_no_data_instance.get_virus_analysis_table(tool_versions)
 
         filename = tmp_path / f"{self.test_no_data_instance.sample_id}_no_viral_aligner_analysis_fields.json"
         self.test_no_data_instance.analysis_table.write_analysis_to_json(filename)
@@ -187,15 +209,18 @@ class TestBrokenInput:
         )
 
     def test_nothing_breaks_if_missing_column(self):
+        self.test_broken_data_instance.get_virus_analysis_table(tool_versions)
         assert (r := self.test_broken_data_instance.results) == {}, f"Expected empty results dict, got {r}"
-        self.test_broken_data_instance.get_virus_analysis_table("test_profile_table.xlsx")
 
     def test_save_outputs_to_csv(self, tmp_path):
         self.test_broken_data_instance.save_outputs_to_csv(tmp_path)
         print(f"Saving broken data csvs {tmp_path}")
 
-    def test_write_to_json(self, tmp_path):
-        self.test_broken_data_instance.get_virus_analysis_table("test_profile_table.xlsx")
+    @patch("onyx_analysis_helper.onyx_analysis_helper_functions.OnyxClient.get")
+    def test_write_to_json(self, mock_query, tmp_path):
+        # First mock the onyx query results.
+        mock_query.return_value = MOCK_ONYX_RECORD
+        self.test_broken_data_instance.get_virus_analysis_table(tool_versions)
 
         filename = tmp_path / f"{self.test_broken_data_instance.sample_id}_broken_viral_aligner_analysis_fields.json"
         self.test_broken_data_instance.analysis_table.write_analysis_to_json(filename)
