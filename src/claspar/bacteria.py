@@ -300,10 +300,10 @@ class KrakenBacteria:
         return headline_result, results, kraken_species, kraken_genus
 
     # Make analysis tables
-    def get_kraken_bacteria_analysis_table(self, tool_versions: dict):
+    def get_kraken_bacteria_analysis_table(self, onyx_versions: list[dict], tool_versions: dict):
         """
         Pull together all the class attributes into the analysis table.
-
+        :param onyx_versions: list of versions from onyx - must be from when data was first queried.
         :param tool_versions: dict of tools and versions used.
         """
         analysis_table, _ = create_analysis_fields(
@@ -311,6 +311,7 @@ class KrakenBacteria:
             classifier="kraken",
             record_id=self.sample_id,
             thresholds_dict=self.thresholds,
+            onyx_versions=onyx_versions,
             tool_versions=tool_versions,
             headline_result=self.headline_result,
             results=self.results,
@@ -533,10 +534,11 @@ class SylphBacteria:
 
         return headline_result, results, sylph_processed_df
 
-    def get_sylph_analysis_table(self, tool_versions: dict):
+    def get_sylph_analysis_table(self, onyx_versions: list[dict], tool_versions: dict):
         """
         Pull together all the class attributes into the analysis table.
 
+        :param onyx_versions: list of versions from onyx - must be from when data was first queried.
         :param tool_versions: dict of tools and versions used.
         """
         analysis_table, _ = create_analysis_fields(
@@ -544,6 +546,7 @@ class SylphBacteria:
             classifier="sylph",
             record_id=self.sample_id,
             thresholds_dict=self.thresholds,
+            onyx_versions=onyx_versions,
             tool_versions=tool_versions,
             headline_result=self.headline_result,
             results=self.results,

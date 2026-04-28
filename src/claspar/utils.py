@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pandas as pd
 import yaml
-from onyx import OnyxClient, OnyxConfig, OnyxEnv
+from onyx import OnyxConfig, OnyxEnv
 from onyx_analysis_helper import onyx_analysis_helper_functions as oa
 from pandas.core.frame import DataFrame
 
@@ -54,20 +54,21 @@ CONFIG = OnyxConfig(
 )
 
 
-@oa.call_to_onyx
-def get_input_data(sample_id: str, server: str) -> tuple[list[pd.DataFrame], int]:
+def get_input_data(sample_id: str, server: str) -> tuple[list[pd.DataFrame], list[dict], int]:
     """
     Get the input data from Onyx. Decorated to handle errors suitably.
     :param sample_id: ID of the sample (climb-id).
     :param server: the server to query.
     :return: tuple of dataframes (list) and exitcode (int).
     """
-    with OnyxClient(CONFIG) as client:
-        record = client.get(
-            project=server,
-            climb_id=sample_id,
-            include=["classifier_calls", "alignment_results", "sylph_results"],
-        )
+    fields_to_include = ["classifier_calls", "alignment_results", "sylph_results"]
+    record, onyx_versions, onyx_exitcode = oa.get_data_and_versions_from_onyx(
+        sample_id, server, fields=fields_to_include
+    )
+
+    if onyx_exitcode != 0:
+        logging.error("Issue occured with Onyx query and getting data, see above. Exiting cleanly.")
+        return [pd.DataFrame(), pd.DataFrame(), pd.DataFrame()], [], onyx_exitcode
 
     try:
         alignment_results_df = pd.DataFrame(record["alignment_results"])
@@ -78,7 +79,7 @@ def get_input_data(sample_id: str, server: str) -> tuple[list[pd.DataFrame], int
         logging.error("Could not find key %s in Onyx Record. Exiting cleanly." % (e))  # noqa
         exitcode = 1
 
-    return [alignment_results_df, sylph_results_df, classifier_calls_df], exitcode
+    return [alignment_results_df, sylph_results_df, classifier_calls_df], onyx_versions, exitcode
 
 
 ###################
@@ -91,6 +92,7 @@ def create_analysis_fields(
     classifier: str,
     record_id: str,
     thresholds_dict: dict[str, int | str],
+    onyx_versions: list,
     tool_versions: dict,
     headline_result: str,
     results: dict,
@@ -103,6 +105,7 @@ def create_analysis_fields(
     :param record_id: Climb ID for sample
     :param thresholds_dict: Dictionary containing criteria used to filter, which gets added to the
     methods field as 'thresholds': {thresholds_dict}
+    :param onyx_versions: list of versions from onyx - must be from when data was first queried.
     :param tool_versions: dict of tools, databases, files etc and their versions.
     :param headline_result: Short description of main result
     :param results: Dictionary containing results
@@ -122,7 +125,7 @@ def create_analysis_fields(
     onyx_analysis.add_package_metadata(package_name="claspar")
     # Check that the methods were parsed by the class
     methods_versions_fail = onyx_analysis.add_versions_to_methods(
-        include_onyx_versions=True, sample_id=record_id, server_name=server, tool_versions=tool_versions
+        onyx_versions=onyx_versions, tool_versions=tool_versions
     )
 
     # Reformat the thresholds_dict:
@@ -132,10 +135,12 @@ def create_analysis_fields(
 
     # Check that the results were parsed by the class
     results_fail = onyx_analysis.add_results(top_result=headline_result, results_dict=results)
+
     # Add info about sample and server (server/synthscape)
     onyx_analysis.add_server_records(sample_id=record_id, server_name=server)
     # Check the final object using the helper method
     required_field_fail, attribute_fail = onyx_analysis.check_analysis_object(publish_analysis=False)
+    # print(onyx_analysis.methods)
     # If any fail, raise exit code.
     exitcode = 1 if any([methods_fail, methods_versions_fail, results_fail, required_field_fail, attribute_fail]) else 0
 
