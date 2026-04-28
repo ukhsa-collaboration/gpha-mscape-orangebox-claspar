@@ -26,6 +26,15 @@ MOCK_ONYX_RECORD: dict[str, str] = {
     "alignment_db_version": "1.0.0",
 }
 
+ONYX_VERSIONS = [
+    {"name": "classifier_version", "version": "1.0.0"},
+    {"name": "classifier_db_date", "version": "1970-01-01"},
+    {"name": "ncbi_taxonomy_date", "version": "1970-01-01"},
+    {"name": "scylla_version", "version": "1.0.0"},
+    {"name": "sylph_db_version", "version": "1.0.0"},
+    {"name": "alignment_db_version", "version": "1.0.0"},
+]
+
 
 @pytest.fixture(scope="module")
 def metadata_json():
@@ -103,7 +112,9 @@ class TestViralParser:
         assert len(results) == 4
 
     def test_get_virus_analysis_table(self):
-        analysis_table = self.test_class_instance.get_virus_analysis_table(tool_versions)
+        analysis_table = self.test_class_instance.get_virus_analysis_table(
+            onyx_versions=ONYX_VERSIONS, tool_versions=tool_versions
+        )
         assert (p := analysis_table.pipeline_name) == "ClasPar", f'Expected pipeline name "ClasPar", got "{p}"'
         assert (n := analysis_table.name) == "claspar-viralaligner-virus", (
             f'Expected name "virus-classifier-parser", got {n}'
@@ -118,7 +129,7 @@ class TestViralParser:
         # First mock the onyx query results.
         mock_query.return_value = MOCK_ONYX_RECORD
 
-        self.test_class_instance.get_virus_analysis_table(tool_versions)
+        self.test_class_instance.get_virus_analysis_table(onyx_versions=ONYX_VERSIONS, tool_versions=tool_versions)
         filename = tmp_path / f"{self.test_class_instance.sample_id}_viral_aligner_analysis_fields.json"
         self.test_class_instance.analysis_table.write_analysis_to_json(filename)
         print(f"Saving json to {filename}")
@@ -167,7 +178,7 @@ class TestNoVirus:
     def test_write_to_json(self, mock_query, tmp_path):
         # First mock the onyx query results.
         mock_query.return_value = MOCK_ONYX_RECORD
-        self.test_no_data_instance.get_virus_analysis_table(tool_versions)
+        self.test_no_data_instance.get_virus_analysis_table(onyx_versions=ONYX_VERSIONS, tool_versions=tool_versions)
 
         filename = tmp_path / f"{self.test_no_data_instance.sample_id}_no_viral_aligner_analysis_fields.json"
         self.test_no_data_instance.analysis_table.write_analysis_to_json(filename)
@@ -209,7 +220,9 @@ class TestBrokenInput:
         )
 
     def test_nothing_breaks_if_missing_column(self):
-        self.test_broken_data_instance.get_virus_analysis_table(tool_versions)
+        self.test_broken_data_instance.get_virus_analysis_table(
+            onyx_versions=ONYX_VERSIONS, tool_versions=tool_versions
+        )
         assert (r := self.test_broken_data_instance.results) == {}, f"Expected empty results dict, got {r}"
 
     def test_save_outputs_to_csv(self, tmp_path):
@@ -220,7 +233,9 @@ class TestBrokenInput:
     def test_write_to_json(self, mock_query, tmp_path):
         # First mock the onyx query results.
         mock_query.return_value = MOCK_ONYX_RECORD
-        self.test_broken_data_instance.get_virus_analysis_table(tool_versions)
+        self.test_broken_data_instance.get_virus_analysis_table(
+            onyx_versions=ONYX_VERSIONS, tool_versions=tool_versions
+        )
 
         filename = tmp_path / f"{self.test_broken_data_instance.sample_id}_broken_viral_aligner_analysis_fields.json"
         self.test_broken_data_instance.analysis_table.write_analysis_to_json(filename)
