@@ -114,6 +114,15 @@ MOCK_ONYX_RECORD: dict[str, str] = {
     "alignment_db_version": "1.0.0",
 }
 
+ONYX_VERSIONS = [
+    {"name": "classifier_version", "version": "1.0.0"},
+    {"name": "classifier_db_date", "version": "1970-01-01"},
+    {"name": "ncbi_taxonomy_date", "version": "1970-01-01"},
+    {"name": "scylla_version", "version": "1.0.0"},
+    {"name": "sylph_db_version", "version": "1.0.0"},
+    {"name": "alignment_db_version", "version": "1.0.0"},
+]
+
 
 @patch("onyx_analysis_helper.onyx_analysis_helper_functions.OnyxClient.get")
 def test_create_bacterial_analysis_fields(mock_query):
@@ -158,6 +167,7 @@ def test_create_bacterial_analysis_fields(mock_query):
         classifier="sylph",
         record_id="ID_123456",
         thresholds_dict={"stuff": 1},
+        onyx_versions=ONYX_VERSIONS,
         tool_versions=tool_versions,
         headline_result="Found some stuff here.",
         results={"0": {"thing": 10, "type": "little"}, "1": {"thing": 10, "type": "big"}},

@@ -187,7 +187,7 @@ def main():
 
         else:
             # Set up data needed (query Onyx once here)
-            dataframes, onyx_exitcode = get_input_data(args.sample_id, args.server)
+            dataframes, onyx_versions, onyx_exitcode = get_input_data(args.sample_id, args.server)
             if onyx_exitcode == 1:
                 # --> Exit if issues with Onyx:
                 logging.error("Exiting due to issues with Onyx.")
@@ -240,7 +240,9 @@ def main():
         )
 
         # Get the analysis table:
-        kraken_bacterial_analysis_table = kraken_bacteria_parser.get_kraken_bacteria_analysis_table(tool_versions)
+        kraken_bacterial_analysis_table = kraken_bacteria_parser.get_kraken_bacteria_analysis_table(
+            onyx_versions=onyx_versions, tool_versions=tool_versions
+        )
 
         # All good so far, let's write analysis table to json:
         kraken_bacteria_json_path = (
@@ -274,7 +276,9 @@ def main():
         )
 
         # Get the analysis table:
-        sylph_analysis_table = sylph_parser.get_sylph_analysis_table(tool_versions)
+        sylph_analysis_table = sylph_parser.get_sylph_analysis_table(
+            onyx_versions=onyx_versions, tool_versions=tool_versions
+        )
 
         # All good so far, let's write analysis table to json:
         sylph_json_path = Path(args.output_dir) / f"{args.sample_id}.claspar-sylph.analysis_fields.json"
@@ -304,7 +308,9 @@ def main():
             server=args.server,
         )
 
-        viral_aligner_analysis_table = viral_aligner.get_virus_analysis_table(tool_versions)
+        viral_aligner_analysis_table = viral_aligner.get_virus_analysis_table(
+            onyx_versions=onyx_versions, tool_versions=tool_versions
+        )
 
         # All good so far, let's write analysis table to json:
         viral_aligner_json_path = Path(args.output_dir) / f"{args.sample_id}.claspar-viralaligner.analysis_fields.json"
