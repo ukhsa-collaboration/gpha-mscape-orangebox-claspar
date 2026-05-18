@@ -7,9 +7,10 @@ requires-python = ">=3.12"
 dependencies = [
     "pandas",
     "pyyaml",
-    "onyx-analysis-helper@git+https://github.com/ukhsa-collaboration/onyx-analysis-helper.git@v0.4.0",
-    "taxaplease@git+https://github.com/ukhsa-collaboration/gpha-mscape-taxaplease",
-    "profiler@https://github.com/ukhsa-collaboration/gpha-mscape-orangebox-profiler/archive/refs/tags/v1.0.0.tar.gz"]
+    "onyx-analysis-helper@git+https://github.com/ukhsa-collaboration/onyx-analysis-helper.git@v0.5.1",
+    "taxaplease@https://github.com/ukhsa-collaboration/gpha-mscape-taxaplease/archive/refs/tags/v2.2.1.tar.gz",
+    "profiler@https://github.com/ukhsa-collaboration/gpha-mscape-orangebox-profiler/archive/refs/tags/v1.0.1.tar.gz"]
+
 
 [tool.setuptools.dynamic]
 version = { attr = "claspar.__version__" } # Add underscore separated repo name here
