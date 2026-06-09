@@ -156,6 +156,7 @@ def test_create_bacterial_analysis_fields(mock_query):
                 {"name": "profiler", "version": profiler_version},
             ],
             "thresholds": {"stuff": 1},
+            "onyx_versions_hash": "e0c8c12a02fa86494059858c41af311d94c086a286bf4c62d53c21261e90f614",
         },
         "result": "Found some stuff here.",
         "result_metrics": {"0": {"thing": 10, "type": "little"}, "1": {"thing": 10, "type": "big"}},
