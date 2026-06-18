@@ -2,7 +2,7 @@
 Added onyx hash to methods.
 
 ## Changed
-- bumped version of onyx analysis helper to 0.6.0.
+- bumped version of onyx analysis helper to 0.6.1.
 - onyx hash is written into methods by the onyx analysis helper method.
 
 Somewhat arbitrary version bump to try to fix docker container version issues.
