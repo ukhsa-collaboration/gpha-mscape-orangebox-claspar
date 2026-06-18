@@ -57,7 +57,7 @@ def get_args():
         help="Specify server code is being run on - helpful if developing on synthscape and running on server",
     )
     parser.add_argument(
-        "--profiles-table",
+        "--profiles_table",
         "-p",
         dest="profile_table_spreadsheet_path",
         type=Path,
@@ -76,7 +76,7 @@ def get_args():
         help="Optional - Path to samplesheet. Must be tsv, should have header 'full_Onyx_json' or 2 columns, 1 row.",
     )
     parser.add_argument(
-        "--log-file",
+        "--log_file",
         "-l",
         dest="log_file",
         type=str,
