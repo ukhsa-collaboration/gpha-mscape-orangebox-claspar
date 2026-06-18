@@ -8,7 +8,7 @@ the onyx analysis table object.
 - fixed the version of taxaplease
 - bumped version of profiler (patch to fix taxaplease version ResolutionImpossible issue)
 - docker publish dev as well as main.
-- bumped version of onyx analysis helper to 0.6.0.
+- bumped version of onyx analysis helper to 0.6.1.
 
 ## Added:
 - unit tests with patched queries.
