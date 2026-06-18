@@ -1,3 +1,14 @@
+# Claspar v2.1.1
+Added onyx hash to methods.
+
+## Changed
+- bumped version of onyx analysis helper to 0.6.0.
+- onyx hash is written into methods by the onyx analysis helper method.
+
+Somewhat arbitrary version bump to try to fix docker container version issues.
+
+---
+
 # Claspar v2.1.0
 Updated onyx query.
 
@@ -8,7 +19,7 @@ the onyx analysis table object.
 - fixed the version of taxaplease
 - bumped version of profiler (patch to fix taxaplease version ResolutionImpossible issue)
 - docker publish dev as well as main.
-- bumped version of onyx analysis helper to 0.6.1.
+- bumped version of onyx analysis helper to 0.6.0.
 
 ## Added:
 - unit tests with patched queries.
