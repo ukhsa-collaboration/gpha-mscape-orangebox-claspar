@@ -5,12 +5,10 @@ table creation function, error handling and io functions.
 
 import json
 import logging
-import os
 from pathlib import Path
 
 import pandas as pd
 import yaml
-from onyx import OnyxConfig, OnyxEnv
 from onyx_analysis_helper import onyx_analysis_helper_functions as oa
 from pandas.core.frame import DataFrame
 
@@ -46,12 +44,6 @@ class InputError(ClasParError):
 
 ########
 # Onyx #
-
-# Set up onyx config
-CONFIG = OnyxConfig(
-    domain=os.environ[OnyxEnv.DOMAIN],
-    token=os.environ[OnyxEnv.TOKEN],
-)
 
 
 def get_input_data(sample_id: str, server: str) -> tuple[list[pd.DataFrame], list[dict], int]:
