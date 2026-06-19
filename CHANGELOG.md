@@ -1,11 +1,40 @@
-Claspar v2.0.1
+# Claspar v2.1.1
+Added onyx hash to methods.
+
+## Changed
+- bumped version of onyx analysis helper to 0.6.1.
+- onyx hash is written into methods by the onyx analysis helper method.
+
+Somewhat arbitrary version bump to try to fix docker container version issues.
+
+---
+
+# Claspar v2.1.0
+Updated onyx query.
+
+## Changed:
+- Onyx query is now done once using the onyx analysis helper function. This returns the onyx versions which are fed into
+the onyx analysis table object.
+- tool versions are collated in main and fed into the analysis table creation function for each classifier.
+- fixed the version of taxaplease
+- bumped version of profiler (patch to fix taxaplease version ResolutionImpossible issue)
+- docker publish dev as well as main.
+- bumped version of onyx analysis helper to 0.6.0.
+
+## Added:
+- unit tests with patched queries.
+
+
+---
+
+# Claspar v2.0.1
 2 small features added that modify the analysis table.
 - added version of Profiler and the profiles table file used to the methods section of analysis tables
 - changed the 'name' field in the analysis table to be more descriptive (now reads claspar-{classifier}-{domain} where classifier is viralaligner/sylph/kraken and domain is virus/bacteria).
 
+---
 
-
-Claspar v2.0.0
+# Claspar v2.0.0
 
 BREAKING CHANGE - must now give the clinical profile tables file to claspar as argument.
 

@@ -9,12 +9,13 @@ import logging
 import sys
 from datetime import datetime
 from importlib import resources
+from importlib.metadata import version
 from pathlib import Path
 
 from profiler import get_profiles as profiler
 from taxaplease import TaxaPlease
 
-from claspar import __version__, bacteria, virus
+from claspar import bacteria, virus
 from claspar.utils import ClasParError, get_input_data, read_config_file, read_samplesheet, setup_outdir
 
 today = datetime.today().strftime("%Y-%m-%d")
@@ -26,7 +27,7 @@ def get_args():
         prog="claspar",
         description=f"""
         ClasPar: the friendly classifier parser that parses, filters and writes classifier results to analysis tables.
-        Version = {__version__}
+        Version = {version("claspar")}
         """,
     )
     parser.add_argument("--sample_id", "-i", dest="sample_id", type=str, required=True, help="Climb-ID for sample.")
@@ -56,7 +57,7 @@ def get_args():
         help="Specify server code is being run on - helpful if developing on synthscape and running on server",
     )
     parser.add_argument(
-        "--profiles-table",
+        "--profiles_table",
         "-p",
         dest="profile_table_spreadsheet_path",
         type=Path,
@@ -75,7 +76,7 @@ def get_args():
         help="Optional - Path to samplesheet. Must be tsv, should have header 'full_Onyx_json' or 2 columns, 1 row.",
     )
     parser.add_argument(
-        "--log-file",
+        "--log_file",
         "-l",
         dest="log_file",
         type=str,
@@ -88,7 +89,7 @@ def get_args():
             """
         ),
     )
-    parser.add_argument("--version", "-v", action="version", version=f"%(prog)s - version {__version__}")
+    parser.add_argument("--version", "-v", action="version", version=f"%(prog)s - version {version('claspar')}")
 
     return parser
 
@@ -186,7 +187,7 @@ def main():
 
         else:
             # Set up data needed (query Onyx once here)
-            dataframes, onyx_exitcode = get_input_data(args.sample_id, args.server)
+            dataframes, onyx_versions, onyx_exitcode = get_input_data(args.sample_id, args.server)
             if onyx_exitcode == 1:
                 # --> Exit if issues with Onyx:
                 logging.error("Exiting due to issues with Onyx.")
@@ -203,10 +204,17 @@ def main():
         # Set up profile lookup dict:
         profile_table_spreadsheet_path = Path(args.profile_table_spreadsheet_path)
         profiles_dict: dict[str, dict[int, str]] = profiler.make_profiles_dict(profile_table_spreadsheet_path)
-        # Get name of profile tables file - for versioning in the analysis tables
-        profile_tables_name: str = str(profile_table_spreadsheet_path.name)
+
         # Set up taxaplease instance
         tp: TaxaPlease = TaxaPlease(database=args.database_path) if args.database_path else TaxaPlease()
+
+        # Set up dict of versions to record in the analysis tables later:
+        tool_versions: dict[str, str | None] = {}
+        tool_versions["claspar_version"] = version("claspar")
+        tool_versions["profiler_version"] = version("profiler")
+        tool_versions["taxaplease_version"] = version("taxaplease")
+        tool_versions["profile_tables_name"] = str(profile_table_spreadsheet_path.name)
+        tool_versions["taxaplease_database"] = tp.get_current_taxonomy_url_from_database().split("/")[-1]
 
         ####################
         # The Actual Thing #
@@ -232,7 +240,9 @@ def main():
         )
 
         # Get the analysis table:
-        kraken_bacterial_analysis_table = kraken_bacteria_parser.get_kraken_bacteria_analysis_table(profile_tables_name)
+        kraken_bacterial_analysis_table = kraken_bacteria_parser.get_kraken_bacteria_analysis_table(
+            onyx_versions=onyx_versions, tool_versions=tool_versions
+        )
 
         # All good so far, let's write analysis table to json:
         kraken_bacteria_json_path = (
@@ -266,7 +276,9 @@ def main():
         )
 
         # Get the analysis table:
-        sylph_analysis_table = sylph_parser.get_sylph_analysis_table(profile_tables_name)
+        sylph_analysis_table = sylph_parser.get_sylph_analysis_table(
+            onyx_versions=onyx_versions, tool_versions=tool_versions
+        )
 
         # All good so far, let's write analysis table to json:
         sylph_json_path = Path(args.output_dir) / f"{args.sample_id}.claspar-sylph.analysis_fields.json"
@@ -296,7 +308,9 @@ def main():
             server=args.server,
         )
 
-        viral_aligner_analysis_table = viral_aligner.get_virus_analysis_table(profile_tables_name)
+        viral_aligner_analysis_table = viral_aligner.get_virus_analysis_table(
+            onyx_versions=onyx_versions, tool_versions=tool_versions
+        )
 
         # All good so far, let's write analysis table to json:
         viral_aligner_json_path = Path(args.output_dir) / f"{args.sample_id}.claspar-viralaligner.analysis_fields.json"

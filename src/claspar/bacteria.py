@@ -300,18 +300,19 @@ class KrakenBacteria:
         return headline_result, results, kraken_species, kraken_genus
 
     # Make analysis tables
-    def get_kraken_bacteria_analysis_table(self, profile_table_name: str):
+    def get_kraken_bacteria_analysis_table(self, onyx_versions: list[dict], tool_versions: dict):
         """
         Pull together all the class attributes into the analysis table.
-
-        :param profile_table_name: Name of the profile table used; this acts as a version.
+        :param onyx_versions: list of versions from onyx - must be from when data was first queried.
+        :param tool_versions: dict of tools and versions used.
         """
         analysis_table, _ = create_analysis_fields(
             domain="bacteria",
             classifier="kraken",
             record_id=self.sample_id,
-            thresholds=self.thresholds,
-            profile_table_name=profile_table_name,
+            thresholds_dict=self.thresholds,
+            onyx_versions=onyx_versions,
+            tool_versions=tool_versions,
             headline_result=self.headline_result,
             results=self.results,
             server=self.server,
@@ -520,7 +521,6 @@ class SylphBacteria:
             .reset_index(drop=True)
             .to_dict(orient="index")
         )
-        # Make headline result with format "ProfileA (high, low)" with the profile if found, and high or low if found.
 
         #### Make headline result
         # Make headline result with format "ProfileA-high, ProfileA-low".
@@ -534,18 +534,20 @@ class SylphBacteria:
 
         return headline_result, results, sylph_processed_df
 
-    def get_sylph_analysis_table(self, profile_table_name: str):
+    def get_sylph_analysis_table(self, onyx_versions: list[dict], tool_versions: dict):
         """
         Pull together all the class attributes into the analysis table.
 
-        :param profile_table_name: Name of the profile table used; this acts as a version.
+        :param onyx_versions: list of versions from onyx - must be from when data was first queried.
+        :param tool_versions: dict of tools and versions used.
         """
         analysis_table, _ = create_analysis_fields(
             domain="bacteria",
             classifier="sylph",
             record_id=self.sample_id,
-            thresholds=self.thresholds,
-            profile_table_name=profile_table_name,
+            thresholds_dict=self.thresholds,
+            onyx_versions=onyx_versions,
+            tool_versions=tool_versions,
             headline_result=self.headline_result,
             results=self.results,
             server=self.server,

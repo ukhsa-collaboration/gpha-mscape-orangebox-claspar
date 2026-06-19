@@ -4,12 +4,13 @@ tests should be run before and after any changes are made.
 """
 
 import json
+from unittest.mock import patch
 
 import pandas as pd
 import pytest  # noqa: F401
 from taxaplease import TaxaPlease
 
-from claspar import bacteria
+from claspar import __version__, bacteria
 
 pd.set_option("display.max_colwidth", None)
 pd.set_option("display.max_columns", None)
@@ -17,6 +18,8 @@ pd.set_option("display.max_rows", None)
 
 
 tp = TaxaPlease()
+
+tool_versions: dict[str, str] = {"claspar": __version__}
 
 
 @pytest.fixture(scope="module")
@@ -31,11 +34,31 @@ def test_input(metadata_json):
     print(metadata_json["classifier_calls"])
 
 
+MOCK_ONYX_RECORD: dict[str, str] = {
+    "climb-id": "ID-123456",
+    "site": "test",
+    "published_date": "2026-01-01",
+    "classifier_version": "1.0.0",
+    "classifier_db_date": "1970-01-01",
+    "ncbi_taxonomy_date": "1970-01-01",
+    "scylla_version": "1.0.0",
+    "sylph_db_version": "1.0.0",
+    "alignment_db_version": "1.0.0",
+}
+
+ONYX_VERSIONS = [
+    {"name": "classifier_version", "version": "1.0.0"},
+    {"name": "classifier_db_date", "version": "1970-01-01"},
+    {"name": "ncbi_taxonomy_date", "version": "1970-01-01"},
+    {"name": "scylla_version", "version": "1.0.0"},
+    {"name": "sylph_db_version", "version": "1.0.0"},
+    {"name": "alignment_db_version", "version": "1.0.0"},
+]
+
+
 ################
 # Kraken Tests #
 ################
-
-
 class TestKrakenBacteria:
     @pytest.fixture(autouse=True)
     def kraken_thresholds_dict(self):
@@ -84,7 +107,7 @@ class TestKrakenBacteria:
             (139, True, 64895, "Borreliella"),
             (1410656, True, 859, "Fusobacterium necrophorum"),
             (2696357, False, 2788787, "unclassified Caudoviricetes"),
-            (3052230, False, 11102, "Hepacivirus"),
+            (3052230, False, 11102, "Orthohepacivirus"),
         ],
     )
     def test__get_parent_taxonomy(self, taxonid, isbacteria, parent_id, parent_name):
@@ -197,8 +220,13 @@ class TestKrakenBacteria:
         self.kraken_class_instance.save_outputs_to_csv(tmp_path)
         print(f"Saving to {tmp_path}")
 
-    def test_write_to_json(self, tmp_path):
-        self.kraken_class_instance.get_kraken_bacteria_analysis_table("test_profile_table.xlsx")
+    @patch("onyx_analysis_helper.onyx_analysis_helper_functions.OnyxClient.get")
+    def test_write_to_json(self, mock_query, tmp_path):
+        # First mock the onyx query results.
+        mock_query.return_value = MOCK_ONYX_RECORD
+        self.kraken_class_instance.get_kraken_bacteria_analysis_table(
+            onyx_versions=ONYX_VERSIONS, tool_versions=tool_versions
+        )
 
         filename = tmp_path / f"{self.kraken_class_instance.sample_id}_kraken_bacteria_analysis_fields.json"
         self.kraken_class_instance.analysis_table.write_analysis_to_json(filename)
@@ -251,8 +279,13 @@ class TestNoKrakenBacteria:
         self.kraken_class_instance.save_outputs_to_csv(tmp_path)
         print(f"Saving to {tmp_path}")
 
-    def test_write_to_json(self, tmp_path):
-        self.kraken_class_instance.get_kraken_bacteria_analysis_table("test_profile_table.xlsx")
+    @patch("onyx_analysis_helper.onyx_analysis_helper_functions.OnyxClient.get")
+    def test_write_to_json(self, mock_query, tmp_path):
+        # First mock the onyx query results.
+        mock_query.return_value = MOCK_ONYX_RECORD
+        self.kraken_class_instance.get_kraken_bacteria_analysis_table(
+            onyx_versions=ONYX_VERSIONS, tool_versions=tool_versions
+        )
 
         filename = tmp_path / f"{self.kraken_class_instance.sample_id}_kraken_bacteria_analysis_fields.json"
         self.kraken_class_instance.analysis_table.write_analysis_to_json(filename)
@@ -393,7 +426,9 @@ class TestSylphBacteria:
         assert sylph_processed_df.shape == (3, 26)  # 3 processed taxa
 
     def test_get_sylph_analysis_table(self):
-        analysis_table = self.sylph_class_instance_1.get_sylph_analysis_table("test_profile_table.xlsx")
+        analysis_table = self.sylph_class_instance_1.get_sylph_analysis_table(
+            onyx_versions=ONYX_VERSIONS, tool_versions=tool_versions
+        )
         assert (p := analysis_table.pipeline_name) == "ClasPar", f'Expected pipeline name "ClasPar", got "{p}"'
         assert (n := analysis_table.name) == "claspar-sylph-bacteria", (
             f'Expected name "claspar-sylph-bacteria", got {n}'
@@ -404,8 +439,11 @@ class TestSylphBacteria:
         self.sylph_class_instance_1.save_outputs_to_csv(tmp_path)
         print(f"Saving to {tmp_path}")
 
-    def test_write_to_json(self, tmp_path):
-        self.sylph_class_instance_1.get_sylph_analysis_table("test_profile_table.xlsx")
+    @patch("onyx_analysis_helper.onyx_analysis_helper_functions.OnyxClient.get")
+    def test_write_to_json(self, mock_query, tmp_path):
+        # First mock the onyx query results.
+        mock_query.return_value = MOCK_ONYX_RECORD
+        self.sylph_class_instance_1.get_sylph_analysis_table(onyx_versions=ONYX_VERSIONS, tool_versions=tool_versions)
 
         filename = tmp_path / f"{self.sylph_class_instance_1.sample_id}_sylph_analysis_fields.json"
         self.sylph_class_instance_1.analysis_table.write_analysis_to_json(filename)
@@ -413,7 +451,7 @@ class TestSylphBacteria:
 
     ###### Make another instance of the class with some different data:
     @pytest.fixture(autouse=True)
-    def test_instance_2(self, sylph_test_data, sylph_thresholds_dict):
+    def test_instance_2(self):
         sylph_test_df_edited = self.sylph_test_df.copy()
         # add a match at the genus level
         sylph_test_df_edited.loc[3] = [
@@ -550,8 +588,12 @@ class TestNoSylphBacteria:
         self.sylph_class_instance.save_outputs_to_csv(tmp_path)
         print(f"Saving to {tmp_path}")
 
-    def test_write_to_json(self, tmp_path):
-        self.sylph_class_instance.get_sylph_analysis_table("test_profile_table.xlsx")
+    @patch("onyx_analysis_helper.onyx_analysis_helper_functions.OnyxClient.get")
+    def test_write_to_json(self, mock_query, tmp_path):
+        # First mock the onyx query results.
+        mock_query.return_value = MOCK_ONYX_RECORD
+
+        self.sylph_class_instance.get_sylph_analysis_table(onyx_versions=ONYX_VERSIONS, tool_versions=tool_versions)
 
         filename = tmp_path / f"{self.sylph_class_instance.sample_id}_sylph_analysis_fields.json"
         self.sylph_class_instance.analysis_table.write_analysis_to_json(filename)

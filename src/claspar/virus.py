@@ -156,19 +156,21 @@ class VirusClasPar:
 
         return headline_result, results, processed_va_df
 
-    def get_virus_analysis_table(self, profile_table_name: str) -> oa.OnyxAnalysis:
+    def get_virus_analysis_table(self, onyx_versions: list[dict], tool_versions: dict) -> oa.OnyxAnalysis:
         """
         Pull together all the class attributes into the analysis table.
 
-        :param profile_table_name: Name of the profile table used; this acts as a version.
+        :param onyx_versions: list of versions from onyx - must be from when data was first queried.
+        :param tool_versions: dict of tools and versions used.
         """
 
         analysis_table, _ = create_analysis_fields(
             domain="virus",
             classifier="viralaligner",
             record_id=self.sample_id,
-            thresholds=self.thresholds,
-            profile_table_name=profile_table_name,
+            thresholds_dict=self.thresholds,
+            onyx_versions=onyx_versions,
+            tool_versions=tool_versions,
             headline_result=self.headline_results,
             results=self.results,
             server=self.server,
