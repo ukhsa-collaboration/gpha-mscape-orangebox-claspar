@@ -26,39 +26,32 @@ class KrakenBacteria:
     save_outputs_to_csv - method to save the outputs (saved in instance attributes) to file (returns None)
 
     Atrributes:
+
     :param classifier_results: the original classifier outputs from Scylla.
+    :type classifier_results: pd.DataFrame
     :param thresholds: the thresholds to filter on.
     :type thresholds: dict
-    :param sample_id: Climb ID
-    :type sample_id: str
     :param profiles_dict: lookup for profiles and their taxa.
     :type profiles_dict: dict
     :param taxaplease: instance of taxaplease. Will instantiate a new taxaplease instance one if not given.
     :type taxaplease: TaxaPlease
     :param server: database server.
     :type server: str
-    :param kraken_species_results: All the species kraken identified for the sample, plus the genus id and reads
-    at genus level, total species in genus identified (and species that pass the filters), the proportion of total
-    genus reads, the rank of that in its genus and the kraken confidence (high or low).
+    :param kraken_species_results: All the species kraken identified for the sample, plus the genus id and reads at
+        genus level, total species in genus identified (and species that pass the filters), the proportion of total
+        genus reads, the rank of that in its genus and the kraken confidence (high or low).
     :type kraken_species_results: pd.DataFrame
     :param kraken_genus_results: All the genera kraken identified for the sample, plus some info about the
-    species within the genus.
+        species within the genus.
     :type kraken_genus_results: pd.DataFrame
     :param headline_results: the main result, automatically generated to include the final number of taxa that were
-    assigned high confidence.
+        assigned high confidence.
     :type headline_results: str
     :param results: the kraken_species_results dataframe filtered to high confidence species as a dict.
     :type results: dict
     :param analysis_table: instance of the analysis table from the helper, containing all the relevant info.
     :type analysis_table: oa.OnyxAnalysis
 
-
-    :param sample_id: str, climb-id
-    :param original_classifier_df: pandas dataframe, the original results from scylla.
-    :param kraken_bacteria_thresholds_dict: dict, containing the thresholds to filter.
-    :param profiles_dict: dict containing profiles and their taxa.
-    :param taxaplease_instance: instance of TaxaPlease class (optional).
-    :param server: str, database server for Onyx to connect to - will be validated.
     """
 
     def __init__(
@@ -73,6 +66,19 @@ class KrakenBacteria:
         """
         Create instance of KrakenBacteria class, where arguments are attributes and instance methods populate
         headline_result, results and kraken_species_results and kraken_genus_results.
+
+        :param sample_id: Climb ID
+        :type sample_id: str
+        :param original_classifier_df: the original results from scylla.
+        :type original_classifier_df: pd.DataFrame
+        :param kraken_bacteria_thresholds_dict: containing the thresholds to filter.
+        :type kraken_bacteria_thresholds_dict: dict
+        :param profiles_dict: profiles and their taxa.
+        :type profiles_dict: dict
+        :param taxaplease_instance: instance of TaxaPlease class (optional).
+        :type taxaplease_instance: taxaplease.TaxaPlease
+        :param server: database server for Onyx to connect to - will be validated.
+        :type server: str
         """
 
         self.classifier_results: pd.DataFrame = original_classifier_df
