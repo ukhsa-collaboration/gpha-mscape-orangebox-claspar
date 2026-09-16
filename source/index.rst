@@ -5,9 +5,9 @@ ClasPar documentation
 
 ClasPar - a Friendly Classifier Parser.
 
-.. autosummary::
-   :toctree: _autosummary
-   :recursive:
+.. toctree::
+   :maxdepth: 2
 
-   claspar
-   
+   bacteria
+   viruses
+
