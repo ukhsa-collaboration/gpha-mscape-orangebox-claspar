@@ -7,6 +7,14 @@ Breaking change - now takes json profiler file instead of xlsx.
 - **breaking** - argument is now `profiles_json` and accepts a json instead of xlsx.
 - the version of profiler has been bumped to v2.0.0, and claspar.main now uses `get_profiles_and_metadata_from_json`
 - the clinical profiles json version and creation date are added to the methods in the analysis table.
+- unit test for main that takes in test json. 
+- bumped onyx analysis helper to v0.6.4. Fixed unit test to add 'v' to pipeline version.
+
+### Added:
+- test profiles json
+
+### Removed:
+- test profiles xlsx
 
 ---
 ---
