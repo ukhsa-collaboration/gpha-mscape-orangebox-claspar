@@ -144,7 +144,7 @@ def test_create_bacterial_analysis_fields(mock_query):
         ),
         "analysis_date": today,
         "pipeline_name": "ClasPar",
-        "pipeline_version": claspar_version,
+        "pipeline_version": "v" + claspar_version,
         "pipeline_url": "https://github.com/ukhsa-collaboration/gpha-mscape-orangebox-claspar",
         "methods": {
             "versions": [
