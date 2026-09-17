@@ -1,0 +1,91 @@
+{
+    "metadata": {
+        "Taxonomy_database": "ncbi_March-2023",
+        "Excel_filename": "profiler_unittest_profile_tables.xlsx",
+        "Creation_date": "2026-01-01",
+        "Version": "202303.0.0"
+    },
+    "profiles": {
+        "ProfileX": {
+            "1912216": {
+                "taxon": "Cutibacterium spp",
+                "organismType": "bacteria",
+                "rank": "genus"
+            },
+            "1386": {
+                "taxon": "Bacillus spp",
+                "organismType": "bacteria",
+                "rank": "genus"
+            },
+            "34384": {
+                "taxon": "Arthrodermataceae",
+                "organismType": "fungi",
+                "rank": "family"
+            },
+            "12066": {
+                "taxon": "Coxsackievirus",
+                "organismType": "virus",
+                "rank": "species"
+            },
+            "3428501": {
+                "taxon": "Rhinovirus A",
+                "organismType": "virus",
+                "rank": "species"
+            }
+        },
+        "ProfileB": {
+            "3050292": {
+                "taxon": "Herpes simplex virus 1 (HSV-1)",
+                "organismType": "virus",
+                "rank": "species"
+            },
+            "3050293": {
+                "taxon": "Herpes simplex virus 2 (HSV-2)",
+                "organismType": "virus",
+                "rank": "species"
+            },
+            "724": {
+                "taxon": "Haemophilus",
+                "organismType": "bacteria",
+                "rank": "genus"
+            },
+            "3241406": {
+                "taxon": "human mastadenovirus B",
+                "organismType": "virus",
+                "rank": "species"
+            },
+            "517": {
+                "taxon": "Bordetella",
+                "organismType": "bacteria",
+                "rank": "genus"
+            }
+        },
+        "ProfileC": {
+            "2955465": {
+                "taxon": "Influenza B virus",
+                "organismType": "virus",
+                "rank": "species"
+            },
+            "77643": {
+                "taxon": "Mycobacterium tuberculosis complex",
+                "organismType": "bacteria",
+                "rank": "species group"
+            },
+            "1773": {
+                "taxon": "Mycobacterium tuberculosis",
+                "organismType": "bacteria",
+                "rank": "species"
+            },
+            "727": {
+                "taxon": "Haemophilus influenzae",
+                "organismType": "bacteria",
+                "rank": "species"
+            },
+            "2104": {
+                "taxon": "Mycoplasma pneumoniae",
+                "organismType": "bacteria",
+                "rank": "species"
+            }
+        }
+    }
+}

@@ -1,18 +1,40 @@
-# Claspar v2.1.1
+# Changelog
+
+## Claspar v3.0.0
+Breaking change - now takes json profiler file instead of xlsx.
+
+### Changed:
+- **breaking** - argument is now `profiles_json` and accepts a json instead of xlsx.
+- the version of profiler has been bumped to v2.0.0, and claspar.main now uses `get_profiles_and_metadata_from_json`
+- the clinical profiles json version and creation date are added to the methods in the analysis table.
+- unit test for main that takes in test json. 
+- bumped onyx analysis helper to v0.6.4. Fixed unit test to add 'v' to pipeline version.
+
+### Added:
+- test profiles json
+
+### Removed:
+- test profiles xlsx
+
+---
+---
+
+## Claspar v2.1.1
 Added onyx hash to methods.
 
-## Changed
+### Changed
 - bumped version of onyx analysis helper to 0.6.1.
 - onyx hash is written into methods by the onyx analysis helper method.
 
 Somewhat arbitrary version bump to try to fix docker container version issues.
 
 ---
+---
 
-# Claspar v2.1.0
+## Claspar v2.1.0
 Updated onyx query.
 
-## Changed:
+### Changed:
 - Onyx query is now done once using the onyx analysis helper function. This returns the onyx versions which are fed into
 the onyx analysis table object.
 - tool versions are collated in main and fed into the analysis table creation function for each classifier.
@@ -21,20 +43,21 @@ the onyx analysis table object.
 - docker publish dev as well as main.
 - bumped version of onyx analysis helper to 0.6.0.
 
-## Added:
+### Added:
 - unit tests with patched queries.
 
-
+---
 ---
 
-# Claspar v2.0.1
+## Claspar v2.0.1
 2 small features added that modify the analysis table.
 - added version of Profiler and the profiles table file used to the methods section of analysis tables
 - changed the 'name' field in the analysis table to be more descriptive (now reads claspar-{classifier}-{domain} where classifier is viralaligner/sylph/kraken and domain is virus/bacteria).
 
 ---
+---
 
-# Claspar v2.0.0
+## Claspar v2.0.0
 
 BREAKING CHANGE - must now give the clinical profile tables file to claspar as argument.
 
@@ -53,7 +76,8 @@ Other changes:
 - Claspar version is available on the command line using `--version` argument.
 - Optional argument to supply a path to a TaxaPlease database.
 
-
-Claspar v1.0.0
+---
+---
+## Claspar v1.0.0
 - parsed classifier outputs for kraken bacteria, sylph and viral aligner.
 - analysis tables created.

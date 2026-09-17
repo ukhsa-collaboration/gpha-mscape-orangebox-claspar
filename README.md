@@ -58,10 +58,10 @@ Be sure to install the pre-commit hooks in the repo if developing and pushing to
 On the commandline, once installed, run:
 
 ```
-claspar --sample_id <ID> --output_dir <DIR> --server <server> --profile-tables <PATH-TO-PROFILES-TABLE.xlsx>
+claspar --sample_id <ID> --output_dir <DIR> --server <server> --profiles-json <PATH-TO-CLINICAL_PROFILES.json>
 ```
 Where `ID` is a valid sample ID and `DIR` is a valid output directory. This method includes an Onyx call, and therefore
-requires all the necessary credentials and connectivity. There is a test profile table in the tests/test_profile_tables directory.
+requires all the necessary credentials and connectivity. There is a test profiles json in the tests/test_profile_tables directory.
 
 However, it is possible to run ClasPar with a samplesheet (in 2x2 format, tab-seperated, with the columns 'climb-id' and
 'full_Onyx_json'):
@@ -79,7 +79,7 @@ claspar --sample_id <ID> --output_dir <DIR> --server server --samplesheet <TSV F
 | --config, -c | No |  Path to yaml file with filtering thresholds. Default can be seen in src/claspar/data/filter_thresholds.yaml |
 | --server, -s | Yes  | Must be one of: [server, synthscape]. Specify server code is being run on - helpful if developing on synthscape and running on  server|
 | --samplesheet, -t | No | Path to samplesheet. Must be tsv, should have header 'full_Onyx_json' or 2 columns, 1 row. |
-| --profiles_table, -p | Yes | Path to profiles table. Must be in .xlsx format and have the required tabs. |
+| --profiles_json, -p | Yes | Path to profiles table. Must be in .json format and have the required format. See Profiler https://github.com/ukhsa-collaboration/gpha-mscape-orangebox-profiler |
 | --log_file, -l | No | Path to log file. Default will be a file called '/sample-id/_claspar_/date-time/.log' in the output directory (where sample_id is the climb-id for the sample and /date-time/ is the date and time of running). |
 | --database_path, -d | No | Path to database for TaxaPlease. |
 | --version, -v | No | print the version and exit. |

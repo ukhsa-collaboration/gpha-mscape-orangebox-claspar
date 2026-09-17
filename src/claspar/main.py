@@ -57,12 +57,12 @@ def get_args():
         help="Specify server code is being run on - helpful if developing on synthscape and running on server",
     )
     parser.add_argument(
-        "--profiles_table",
+        "--profiles_json",
         "-p",
-        dest="profile_table_spreadsheet_path",
+        dest="profile_json_path",
         type=Path,
         required=True,
-        help="Path to profile tables spreadsheet. Must be in xlsx, with tabs named as the profiles to be assigned.",
+        help="Path to clinical taxonomy profiles json.",
     )
     parser.add_argument(
         "--database_path", "-d", type=str, required=False, help="Optional - Path to a database file for TaxaPlease."
@@ -202,8 +202,9 @@ def main():
             return 1
 
         # Set up profile lookup dict:
-        profile_table_spreadsheet_path = Path(args.profile_table_spreadsheet_path)
-        profiles_dict: dict[str, dict[int, str]] = profiler.make_profiles_dict(profile_table_spreadsheet_path)
+        profiles_lookup: dict[str, dict[int, str]]
+        profiles_metadata: dict[str, str]
+        profiles_lookup, profiles_metadata = profiler.get_profiles_and_metadata_from_json(Path(args.profile_json_path))
 
         # Set up taxaplease instance
         tp: TaxaPlease = TaxaPlease(database=args.database_path) if args.database_path else TaxaPlease()
@@ -213,8 +214,9 @@ def main():
         tool_versions["claspar_version"] = version("claspar")
         tool_versions["profiler_version"] = version("profiler")
         tool_versions["taxaplease_version"] = version("taxaplease")
-        tool_versions["profile_tables_name"] = str(profile_table_spreadsheet_path.name)
         tool_versions["taxaplease_database"] = tp.get_current_taxonomy_url_from_database().split("/")[-1]
+        tool_versions["clinical_profiles_json_version"] = profiles_metadata["Version"]
+        tool_versions["clinical_profiles_json_creation_date"] = profiles_metadata["Creation_date"]
 
         ####################
         # The Actual Thing #
@@ -234,7 +236,7 @@ def main():
             sample_id=args.sample_id,
             original_classifier_df=classifier_calls_df,
             kraken_bacteria_thresholds_dict=threshold_dict["kraken_bacterial_filters"],
-            profiles_dict=profiles_dict,
+            profiles_dict=profiles_lookup,
             taxaplease_instance=tp,
             server=args.server,
         )
@@ -270,7 +272,7 @@ def main():
             sample_id=args.sample_id,
             original_sylph_df=sylph_input_df,
             sylph_bacteria_thresholds_dict=threshold_dict["sylph_filters"],
-            profiles_dict=profiles_dict,
+            profiles_dict=profiles_lookup,
             taxaplease_instance=tp,
             server=args.server,
         )
@@ -303,7 +305,7 @@ def main():
             sample_id=args.sample_id,
             original_viral_aligner_df=viral_aligner_input_df,
             virus_thresholds_dict=threshold_dict["viral_aligner_filters"],
-            profiles_dict=profiles_dict,
+            profiles_dict=profiles_lookup,
             taxaplease_instance=tp,
             server=args.server,
         )

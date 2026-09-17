@@ -1,12 +1,12 @@
 import logging
 from datetime import datetime
 from importlib import resources
+from importlib.metadata import version
 from unittest.mock import patch
 
 import pandas as pd
-from profiler import __version__ as profiler_version
 
-from claspar import __version__, utils
+from claspar import utils
 
 pd.set_option("display.max_colwidth", None)
 pd.set_option("display.max_columns", None)
@@ -15,7 +15,9 @@ pd.set_option("display.max_rows", None)
 LOGGER = logging.getLogger(__name__)
 
 # Create the tool versions dict to add.
-tool_versions = {"claspar": __version__, "profiler": profiler_version}
+claspar_version = version("claspar")
+profiler_version = version("profiler")
+tool_versions = {"claspar": claspar_version, "profiler": profiler_version}
 
 
 def test_read_config_file():
@@ -142,7 +144,7 @@ def test_create_bacterial_analysis_fields(mock_query):
         ),
         "analysis_date": today,
         "pipeline_name": "ClasPar",
-        "pipeline_version": __version__,
+        "pipeline_version": "v" + claspar_version,
         "pipeline_url": "https://github.com/ukhsa-collaboration/gpha-mscape-orangebox-claspar",
         "methods": {
             "versions": [
@@ -152,7 +154,7 @@ def test_create_bacterial_analysis_fields(mock_query):
                 {"name": "scylla_version", "version": "1.0.0"},
                 {"name": "sylph_db_version", "version": "1.0.0"},
                 {"name": "alignment_db_version", "version": "1.0.0"},
-                {"name": "claspar", "version": __version__},
+                {"name": "claspar", "version": claspar_version},
                 {"name": "profiler", "version": profiler_version},
             ],
             "thresholds": {"stuff": 1},
