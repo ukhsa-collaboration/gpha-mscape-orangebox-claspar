@@ -8,6 +8,7 @@ import logging
 from pathlib import Path
 
 import pandas as pd
+from onyx_analysis_helper.onyx_analysis_helper_functions import OnyxAnalysis
 from profiler import get_profiles as profiler
 from taxaplease import TaxaPlease
 
@@ -21,36 +22,14 @@ class KrakenBacteria:
     """
     Class for parsing the bacterial classifications from Kraken.
 
+    On instantiation, all attributes are populated except the analysis table. Populate this using the method
+    `get_kraken_bacteria_analysis_table`.
+
     The main methods are:
-    get_kraken_bacteria_analysis_table - get the analysis table (returns instance of the onyx analysis helper class).
-    save_outputs_to_csv - method to save the outputs (saved in instance attributes) to file (returns None)
 
-    Atrributes:
+    * `get_kraken_bacteria_analysis_table` - get the analysis table (returns instance of the onyx analysis helper class).
 
-    :param classifier_results: the original classifier outputs from Scylla.
-    :type classifier_results: pd.DataFrame
-    :param thresholds: the thresholds to filter on.
-    :type thresholds: dict
-    :param profiles_dict: lookup for profiles and their taxa.
-    :type profiles_dict: dict
-    :param taxaplease: instance of taxaplease. Will instantiate a new taxaplease instance one if not given.
-    :type taxaplease: TaxaPlease
-    :param server: database server.
-    :type server: str
-    :param kraken_species_results: All the species kraken identified for the sample, plus the genus id and reads at
-        genus level, total species in genus identified (and species that pass the filters), the proportion of total
-        genus reads, the rank of that in its genus and the kraken confidence (high or low).
-    :type kraken_species_results: pd.DataFrame
-    :param kraken_genus_results: All the genera kraken identified for the sample, plus some info about the
-        species within the genus.
-    :type kraken_genus_results: pd.DataFrame
-    :param headline_results: the main result, automatically generated to include the final number of taxa that were
-        assigned high confidence.
-    :type headline_results: str
-    :param results: the kraken_species_results dataframe filtered to high confidence species as a dict.
-    :type results: dict
-    :param analysis_table: instance of the analysis table from the helper, containing all the relevant info.
-    :type analysis_table: oa.OnyxAnalysis
+    * `save_outputs_to_csv` - method to save the outputs (saved in instance attributes) to file (returns None)
 
     """
 
@@ -82,21 +61,35 @@ class KrakenBacteria:
         """
 
         self.classifier_results: pd.DataFrame = original_classifier_df
+        """The original classifier outputs from Scylla."""
         self.thresholds: dict = kraken_bacteria_thresholds_dict
+        """The thresholds to filter on."""
         self.sample_id: str = sample_id
+        """ID of sample."""
         self.profiles_dict: dict[str, dict[int, dict[str, str]]] = profiles_dict
+        """Lookup for clinical profiles and their taxa."""
         self.taxaplease: TaxaPlease = taxaplease_instance if taxaplease_instance else TaxaPlease()
+        """Instance of taxaplease. Will instantiate a new taxaplease instance one if not given."""
         self.server: str = server
-
+        """Database server."""
         self.headline_result: str
+        """The main result, automatically generated to include the final number of taxa that were assigned high 
+        confidence."""
         self.result: dict
-
+        """The kraken_species_results dataframe filtered to high confidence species as a dict."""
         self.kraken_species_results: pd.DataFrame
+        """All the species kraken identified for the sample, plus the genus id and reads at genus level, total species 
+        in genus identified (and species that pass the filters), the proportion of total genus reads, the rank of that 
+        in its genus and the kraken confidence (high or low)."""
         self.kraken_genus_results: pd.DataFrame
+        """All the genera kraken identified for the sample, plus some info about the species within the genus."""
 
         self.headline_result, self.results, self.kraken_species_results, self.kraken_genus_results = (
             self._get_kraken_results()
         )
+
+        self.analysis_table: OnyxAnalysis
+        """Instance of onyx analysis object, which stores results ready for Onyx submission."""
 
     def _get_parent_taxonomy(self, taxon_id: int) -> tuple[bool, dict | None, str | None]:
         """
