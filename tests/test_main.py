@@ -7,7 +7,7 @@ from claspar import main
 
 root = Path(__file__).parents[1]
 
-PATH_TO_TEST_TABLE = Path(root / "tests/test_profile_tables/test_profile_tables.xlsx")
+PATH_TO_TEST_TABLE = Path(root / "tests/test_profile_tables/profile_202303.0.0.json")
 PATH_TO_TEST_DATA = Path(root / "tests/test_unit_test_metadata.json")
 
 with PATH_TO_TEST_DATA.open("r") as metadata:
@@ -22,7 +22,7 @@ with PATH_TO_TEST_DATA.open("r") as metadata:
         output_dir="tests/end_to_end",
         server="mscape",
         samplesheet_path=None,
-        profile_table_spreadsheet_path=PATH_TO_TEST_TABLE,
+        profile_json_path=PATH_TO_TEST_TABLE,  # patch in the variable not the arg
         log_file=None,
         config=None,
         database_path=None,
