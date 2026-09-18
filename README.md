@@ -58,7 +58,7 @@ Be sure to install the pre-commit hooks in the repo if developing and pushing to
 On the commandline, once installed, run:
 
 ```
-claspar --sample_id <ID> --output_dir <DIR> --server <server> --profiles-json <PATH-TO-CLINICAL_PROFILES.json>
+claspar --sample_id <ID> --output_dir <DIR> --server <server> --profiles_json <PATH-TO-CLINICAL_PROFILES.json>
 ```
 Where `ID` is a valid sample ID and `DIR` is a valid output directory. This method includes an Onyx call, and therefore
 requires all the necessary credentials and connectivity. There is a test profiles json in the tests/test_profile_tables directory.
@@ -67,7 +67,7 @@ However, it is possible to run ClasPar with a samplesheet (in 2x2 format, tab-se
 'full_Onyx_json'):
 
 ```
-claspar --sample_id <ID> --output_dir <DIR> --server server --samplesheet <TSV FILE> --profile-tables <PATH-TO-PROFILES-TABLE.xlsx>
+claspar --sample_id <ID> --output_dir <DIR> --server server --samplesheet <TSV FILE> --profiles_json <PATH-TO-CLINICAL_PROFILES.json>
 ```
 ***NOTE**: sample ID and server is still required.*
 

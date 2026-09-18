@@ -8,6 +8,7 @@ import logging
 from pathlib import Path
 
 import pandas as pd
+from onyx_analysis_helper.onyx_analysis_helper_functions import OnyxAnalysis
 from profiler import get_profiles as profiler
 from taxaplease import TaxaPlease
 
@@ -21,34 +22,15 @@ class KrakenBacteria:
     """
     Class for parsing the bacterial classifications from Kraken.
 
+    On instantiation, all attributes are populated except the analysis table. Populate this using the method
+    `get_kraken_bacteria_analysis_table`.
+
     The main methods are:
-    get_kraken_bacteria_analysis_table - get the analysis table (returns instance of the onyx analysis helper class).
-    save_outputs_to_csv - method to save the outputs (saved in instance attributes) to file (returns None)
 
-    Atrributes:
-    classifier_results - the original classifier outputs from Scylla.
-    thresholds - dict; the thresholds to filter on.
-    sample_id - str; climb-id
-    profiles_dict - dict; lookup for profiles and their taxa.
-    taxaplease - instance of taxaplease. Will instantiate a new taxaplease instance one if not given.
-    server - str; databse server.
-    kraken_species_results - pd.DataFrame: All the species kraken identified for the sample, plus the genus id and reads
-     at genus level, total species in genus identified (and species that pass the filters), the proportion of total
-     genus reads, the rank of that in its genus and the kraken confidence (high or low).
-    kraken_genus_results - pd.DataFrame: All the genera kraken identified for the sample, plus some info about the
-     species within the genus.
-    headline_results - str; the main result, automatically generated to include the final number of taxa that were
-     assigned high confidence.
-    results - dict; the kraken_species_results dataframe filtered to high confidence species as a dict.
-    analysis_table - oa.OnyxAnalysis; instance of the analysis table from the helper, containing all the relevant info.
+    * `get_kraken_bacteria_analysis_table` - get the analysis table (returns instance of the onyx analysis helper class).
 
+    * `save_outputs_to_csv` - method to save the outputs (saved in instance attributes) to file (returns None)
 
-    :param sample_id: str, climb-id
-    :param original_classifier_df: pandas dataframe, the original results from scylla.
-    :param kraken_bacteria_thresholds_dict: dict, containing the thresholds to filter.
-    :param profiles_dict: dict containing profiles and their taxa.
-    :param taxaplease_instance: instance of TaxaPlease class (optional).
-    :param server: str, database server for Onyx to connect to - will be validated.
     """
 
     def __init__(
@@ -64,30 +46,50 @@ class KrakenBacteria:
         Create instance of KrakenBacteria class, where arguments are attributes and instance methods populate
         headline_result, results and kraken_species_results and kraken_genus_results.
 
-        :param sample_id: str, climb-id
-        :param original_classifier_df: pandas dataframe, the original results from scylla.
-        :param kraken_bacteria_thresholds_dict: dict, containing the thresholds to filter.
-        :param profiles_dict: dict containing profiles and their taxa.
+        :param sample_id: Climb ID
+        :type sample_id: str
+        :param original_classifier_df: the original results from scylla.
+        :type original_classifier_df: pd.DataFrame
+        :param kraken_bacteria_thresholds_dict: containing the thresholds to filter.
+        :type kraken_bacteria_thresholds_dict: dict
+        :param profiles_dict: profiles and their taxa.
+        :type profiles_dict: dict
         :param taxaplease_instance: instance of TaxaPlease class (optional).
-        :param server: str, database server for Onyx to connect to - will be validated.
+        :type taxaplease_instance: taxaplease.TaxaPlease
+        :param server: database server for Onyx to connect to - will be validated.
+        :type server: str
         """
 
         self.classifier_results: pd.DataFrame = original_classifier_df
+        """The original classifier outputs from Scylla."""
         self.thresholds: dict = kraken_bacteria_thresholds_dict
+        """The thresholds to filter on."""
         self.sample_id: str = sample_id
+        """ID of sample."""
         self.profiles_dict: dict[str, dict[int, dict[str, str]]] = profiles_dict
+        """Lookup for clinical profiles and their taxa."""
         self.taxaplease: TaxaPlease = taxaplease_instance if taxaplease_instance else TaxaPlease()
+        """Instance of taxaplease. Will instantiate a new taxaplease instance one if not given."""
         self.server: str = server
-
+        """Database server."""
         self.headline_result: str
+        """The main result, automatically generated to include the final number of taxa that were assigned high
+        confidence."""
         self.result: dict
-
+        """The kraken_species_results dataframe filtered to high confidence species as a dict."""
         self.kraken_species_results: pd.DataFrame
+        """All the species kraken identified for the sample, plus the genus id and reads at genus level, total species
+        in genus identified (and species that pass the filters), the proportion of total genus reads, the rank of that
+        in its genus and the kraken confidence (high or low)."""
         self.kraken_genus_results: pd.DataFrame
+        """All the genera kraken identified for the sample, plus some info about the species within the genus."""
 
         self.headline_result, self.results, self.kraken_species_results, self.kraken_genus_results = (
             self._get_kraken_results()
         )
+
+        self.analysis_table: OnyxAnalysis
+        """Instance of onyx analysis object, which stores results ready for Onyx submission."""
 
     def _get_parent_taxonomy(self, taxon_id: int) -> tuple[bool, dict | None, str | None]:
         """
@@ -342,30 +344,14 @@ class SylphBacteria:
     """
     Class for parsing the bacterial classifications from Sylph.
 
+    The attributes are populated on instantiation, except the analysis table. Populate this using the method
+    `get_sylph_analysis_table`.
+
     The main methods are:
-    get_sylph_analysis_table - get the analysis table (returns instance of the onyx analysis helper class).
-    save_outputs_to_csv - method to save the outputs (saved in instance attributes) to file (returns None)
 
-    Atrributes:
-    classifier_results - the original sylph outputs from Scylla.
-    thresholds - dict; the thresholds to filter on.
-    sample_id - str; climb-id
-    profiles_dict - dict; lookup for profiles and their taxa.
-    taxaplease - instance of taxaplease. Will instantiate a new taxaplease instance one if not given.
-    server - str; database server.
-    sylph_filtered_results - pd.DataFrame: All the taxa sylph identified for the sample, plus the confidence.
-    headline_results - str; the main result, automatically generated to include the final number of taxa that were
-     assigned high confidence.
-    results - dict; the sylph_filtered_results dataframe filtered to high confidence species as a dict.
-    analysis_table - oa.OnyxAnalysis; instance of the analysis table from the helper, containing all the relevant info.
+    * `get_sylph_analysis_table` - get the analysis table (returns instance of the onyx analysis helper class).
 
-
-    :param sample_id: str, climb-id
-    :param original_classifier_df: pandas dataframe, the original results from scylla.
-    :param sylph_bacteria_thresholds_dict: dict, containing the thresholds to filter for sylph.
-    :param profiles_dict: dict containing profiles and their taxa.
-    :param taxaplease_instance: instance of TaxaPlease class (optional)
-    :param server: str, database server for Onyx to connect to - will be validated.
+    * `save_outputs_to_csv` - method to save the outputs (saved in instance attributes) to file (returns None).
     """
 
     def __init__(
@@ -388,18 +374,31 @@ class SylphBacteria:
         :param taxaplease_instance: instance of TaxaPlease class (optional).
         :param server: str, database server for Onyx to connect to - will be validated.
         """
-        self.sylph: pd.DataFrame = original_sylph_df
-        self.thresholds: dict = sylph_bacteria_thresholds_dict
-        self.sample_id: str = sample_id
-        self.profiles_dict: dict[str, dict[int, dict[str, str]]] = profiles_dict
-        self.taxaplease: TaxaPlease = taxaplease_instance if taxaplease_instance else TaxaPlease()
-        self.server: str = server
 
+        self.sylph: pd.DataFrame = original_sylph_df
+        """The original sylph outputs from Scylla."""
+        self.thresholds: dict = sylph_bacteria_thresholds_dict
+        """The thresholds to filter on."""
+        self.sample_id: str = sample_id
+        """ID of sample."""
+        self.profiles_dict: dict[str, dict[int, dict[str, str]]] = profiles_dict
+        """Lookup for profiles and their taxa."""
+        self.taxaplease: TaxaPlease = taxaplease_instance if taxaplease_instance else TaxaPlease()
+        """Instance of taxaplease. Will instantiate a new taxaplease instance one if not given."""
+        self.server: str = server
+        """Database server."""
         self.headline_result: str
+        """The main result, automatically generated to include the final number of taxa that were assigned high
+        confidence."""
         self.result: dict
+        """The sylph_filtered_results dataframe filtered to high confidence species as a dict."""
         self.sylph_processed_df: pd.DataFrame
+        """All the taxa sylph identified for the sample, plus the confidence."""
 
         self.headline_result, self.results, self.sylph_processed_df = self._get_sylph_results()
+
+        self.analysis_table: OnyxAnalysis
+        """Instance of the analysis table from the helper, containing all the relevant info."""
 
     def _process_sylph_rank(self, row: pd.Series) -> tuple[int | None, str | None]:
         """
@@ -553,13 +552,14 @@ class SylphBacteria:
             server=self.server,
         )
 
-        self.analysis_table = analysis_table
+        self.analysis_table: OnyxAnalysis = analysis_table
 
         return analysis_table
 
     def save_outputs_to_csv(self, results_dir: str | Path) -> None:
         """
         Save the final results to csv.
+
         :param filename: str, name of file to save to.
         :param results_dir: str or path to directory to save to.
         """

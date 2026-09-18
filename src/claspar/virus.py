@@ -18,29 +18,14 @@ class VirusClasPar:
     """
     Class for parsing the viral aligner classifications.
 
+    The attributes are populated on instantiation, except the analysis table. Populate this using the method
+    `get_virus_analysis_table`.
+
     The main methods are:
-    get_virus_analysis_table - get the analysis table (returns instance of the onyx analysis helper class).
-    save_outputs_to_csv - method to save the outputs (saved in instance attributes) to file (returns None)
 
-    Attributes:
-    data_input - pd.DataFrame; original viral aligner results from scylla.
-    thresholds - dict; the thresholds for filtering
-    sample_id - str; the climb-id
-    server - str;  serveror synthscape
-    profiles_dict - dict; lookup for profiles and their taxa.
-    taxaplease - instance of taxaplease. Will instantiate a new taxaplease instance one if not given.
-    filtered_data - pd.DataFrame; the viral aligner results after filtering
-    headline_results - str; the main result, automatically generated to include the final number of taxa that remained
-    after filtering
-    results - dict; the filtered dataframe as a dict.
-    analysis_table - oa.OnyxAnalysis; instance of the analysis table from the helper, containing all the relevant info.
+    * `get_virus_analysis_table` - get the analysis table (returns instance of the onyx analysis helper class).
 
-    :param sample_id: str, climb-id
-    :param original_viral_aligner_df: pandas dataframe, the original results from scylla.
-    :param virus_thresholds_dict: dict, containing the thresholds to filter.
-    :param profiles_dict: dict containing profiles and their taxa.
-    :param taxaplease_instance: instance of TaxaPlease class (optional).
-    :param server: str,  serveror synthscape (database server for Onyx to connect to - will be validated.)
+    * `save_outputs_to_csv` - method to save the outputs (saved in instance attributes) to file (returns None)
     """
 
     def __init__(
@@ -63,17 +48,30 @@ class VirusClasPar:
         :param taxaplease_instance: instance of TaxaPlease class (optional).
         :param server: str, database server for Onyx to connect to - will be validated.
         """
-        self.viral_aligner_df: pd.DataFrame = original_viral_aligner_df
-        self.thresholds: dict = virus_thresholds_dict
-        self.sample_id: str = sample_id
-        self.profiles_dict: dict[str, dict[int, dict[str, str]]] = profiles_dict
-        self.taxaplease: TaxaPlease = taxaplease_instance if taxaplease_instance else TaxaPlease()
-        self.server: str = server
 
+        self.viral_aligner_df: pd.DataFrame = original_viral_aligner_df
+        """Original viral aligner results from Scylla"""
+        self.thresholds: dict = virus_thresholds_dict
+        """The thresholds for filtering."""
+        self.sample_id: str = sample_id
+        """ID of sample."""
+        self.profiles_dict: dict[str, dict[int, dict[str, str]]] = profiles_dict
+        """Lookup for clinical profiles and their taxa."""
+        self.taxaplease: TaxaPlease = taxaplease_instance if taxaplease_instance else TaxaPlease()
+        """Instance of taxaplease. Will instantiate a new taxaplease instance one if not given."""
+        self.server: str = server
+        """Database server."""
         self.headline_results: str
+        """the main result, automatically generated to include the final number of taxa that remained after
+        filtering."""
         self.results: dict
+        """The filtered dataframe as a dict."""
         self.processed_viral_aligner_df: pd.DataFrame
+        """The viral aligner results after filtering"""
         self.headline_results, self.results, self.processed_viral_aligner_df = self._get_viral_aligner_results()
+
+        self.analysis_table: oa.OnyxAnalysis
+        """Instance of the analysis table from the helper, containing all the relevant info."""
 
     def _process_viral_aligner(self) -> pd.DataFrame:
         """
