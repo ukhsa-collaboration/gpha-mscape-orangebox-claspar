@@ -1,8 +1,8 @@
 ###############
-ClasPar - Virus
+ClasPar - utils
 ###############
 
-.. automodule:: claspar.virus
+.. automodule:: claspar.utils
    :members:
    :undoc-members:
    :inherited-members:

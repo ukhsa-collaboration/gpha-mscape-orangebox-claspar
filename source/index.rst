@@ -10,4 +10,5 @@ ClasPar - a Friendly Classifier Parser.
 
    bacteria
    viruses
+   utils
 
