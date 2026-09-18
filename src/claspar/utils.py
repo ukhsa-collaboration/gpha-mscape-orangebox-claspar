@@ -49,9 +49,20 @@ class InputError(ClasParError):
 def get_input_data(sample_id: str, server: str) -> tuple[list[pd.DataFrame], list[dict], int]:
     """
     Get the input data from Onyx. Decorated to handle errors suitably.
+
     :param sample_id: ID of the sample (climb-id).
     :param server: the server to query.
-    :return: tuple of dataframes (list) and exitcode (int).
+
+    :returns: tuple of three:
+
+        * dataframes (list):
+            list of dataframes; viral aligner, sylph and kraken classifier calls.
+
+        * onyx_versions (list):
+            list of dicts, each holding the name and version of various onyx fields.
+
+        * exitcode (int):
+            whether the method failed (1) or completed succesfully (0).
     """
     fields_to_include = ["classifier_calls", "alignment_results", "sylph_results"]
     record, onyx_versions, onyx_exitcode = oa.get_data_and_versions_from_onyx(
@@ -92,19 +103,25 @@ def create_analysis_fields(
 ) -> tuple[oa.OnyxAnalysis, int]:
     """
     Set up fields dictionary used to populate analysis table containing ClasPar outputs.
+
     :param domain: str, one of 'bacteria', 'virus', 'fungi' etc
     :param classifier: the type of classifier being reported in the table (kraken or sylph)
     :param record_id: Climb ID for sample
-    :param thresholds_dict: Dictionary containing criteria used to filter, which gets added to the
-    methods field as 'thresholds': {thresholds_dict}
+    :param thresholds_dict: Dictionary containing criteria used to filter, which gets added to the methods field as
+        'thresholds': {thresholds_dict}
     :param onyx_versions: list of versions from onyx - must be from when data was first queried.
     :param tool_versions: dict of tools, databases, files etc and their versions.
     :param headline_result: Short description of main result
     :param results: Dictionary containing results
     :param server: Server code is running on, one of "server" or "synthscape"
-    :returns: onyx analysis object and exitcode.
-    onyx_analysis: Class containing required fields for input to onyx analysis table.
-    exitcode: Exit code for checks - will be 0 if all checks passed, 1 if any checks failed
+
+    :returns: Tuple of two:
+
+        * onyx_analysis:
+            Class containing required fields for input to onyx analysis table.
+
+        * exitcode:
+            Exit code for checks - will be 0 if all checks passed, 1 if any checks failed
     """
     onyx_analysis = oa.OnyxAnalysis()  # set up class
     # Add analysis details
@@ -149,8 +166,15 @@ def read_samplesheet(path_to_samplesheet: Path | str) -> tuple[list[pd.DataFrame
     that contains the onyx record as json.
 
     :param path_to_samplesheet: path to the samplesheet to be read in, must be tab seperated.
-    :return: tuple of dataframes (list) and exitcode (int). List of dataframes consists of the alignment results,
-    the sylph results and the classifier calls. Note that any of these could be empty dataframes!
+
+    :returns: tuple of two:
+
+        * dataframes (list):
+            List of dataframes consists of the alignment results, the sylph results and the classifier
+            calls. Note that any of these could be empty dataframes!
+
+        * exitcode (int):
+            exitcode for method, will be 1 if any failures.
     """
     exitcode = 0
     samplesheet_df: DataFrame = pd.read_csv(path_to_samplesheet, sep="\t")
@@ -198,6 +222,7 @@ def check_filters(filters: list[str], threshold_dict: dict) -> int:
 
     :param filters: list of strings: the filters expected in the filter threshold dictionary.
     :param threshold_dict: the filter threshold dictionary.
+
     :return: exitcode (int)
     """
     exitcode = 0
@@ -218,8 +243,16 @@ def read_config_file(config_file: str | Path) -> tuple[dict, list]:
     """
     Read config file to get thresholds to filter each of the classifier results. Check that all filters are accounted
     for and log any that are not used or missing.
+
     :param config_file: path to yaml file containing filter thresholds.
-    :returns: dict, nested dictionary of thresholds and list of exit codes (list of ints)
+
+    :returns: tuple of two:
+
+        * thresholds:
+            nested dictionary of thresholds read from config.
+
+        * exitcodes:
+            list of exitcodes.
     """
     exit_codes = []
 
@@ -254,7 +287,9 @@ def setup_outdir(outdir: str | Path) -> None:
     """
     Handle the output directory, using either the default or commandline arg. Create dir
     if needed.
+
     :param outdir: the outdir argument from commandline.
+
     :return: None.
     """
     outdir_path = Path(outdir)
@@ -266,12 +301,13 @@ def setup_outdir(outdir: str | Path) -> None:
 def write_df_to_csv(*, df: pd.DataFrame, filename: str, results_dir: str | Path) -> Path:
     """
     Write results dataframe to csv.
+
     :param df: dataframe of results to save.
     :param filename: str, unique name of file WITHOUT extension. (csv gets added).
     :param results_dir: Directory to save results to.
+
     :returns: os.path of saved csv file.
     """
-
     result_file_path = Path(results_dir) / f"{filename}.csv"
 
     df.to_csv(result_file_path, index=False)

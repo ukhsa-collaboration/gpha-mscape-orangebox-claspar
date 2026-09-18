@@ -559,6 +559,7 @@ class SylphBacteria:
     def save_outputs_to_csv(self, results_dir: str | Path) -> None:
         """
         Save the final results to csv.
+
         :param filename: str, name of file to save to.
         :param results_dir: str or path to directory to save to.
         """
