@@ -62,7 +62,7 @@ class VirusClasPar:
         self.server: str = server
         """Database server."""
         self.headline_results: str
-        """the main result, automatically generated to include the final number of taxa that remained after 
+        """the main result, automatically generated to include the final number of taxa that remained after
         filtering."""
         self.results: dict
         """The filtered dataframe as a dict."""

@@ -73,13 +73,13 @@ class KrakenBacteria:
         self.server: str = server
         """Database server."""
         self.headline_result: str
-        """The main result, automatically generated to include the final number of taxa that were assigned high 
+        """The main result, automatically generated to include the final number of taxa that were assigned high
         confidence."""
         self.result: dict
         """The kraken_species_results dataframe filtered to high confidence species as a dict."""
         self.kraken_species_results: pd.DataFrame
-        """All the species kraken identified for the sample, plus the genus id and reads at genus level, total species 
-        in genus identified (and species that pass the filters), the proportion of total genus reads, the rank of that 
+        """All the species kraken identified for the sample, plus the genus id and reads at genus level, total species
+        in genus identified (and species that pass the filters), the proportion of total genus reads, the rank of that
         in its genus and the kraken confidence (high or low)."""
         self.kraken_genus_results: pd.DataFrame
         """All the genera kraken identified for the sample, plus some info about the species within the genus."""
@@ -388,7 +388,7 @@ class SylphBacteria:
         self.server: str = server
         """Database server."""
         self.headline_result: str
-        """The main result, automatically generated to include the final number of taxa that were assigned high 
+        """The main result, automatically generated to include the final number of taxa that were assigned high
         confidence."""
         self.result: dict
         """The sylph_filtered_results dataframe filtered to high confidence species as a dict."""
