@@ -53,7 +53,7 @@ def get_args():
         dest="server",
         type=str,
         required=True,
-        choices=["mscape", "synthscape"],
+        choices=["mscape", "synthscape", "devscape"],
         help="Specify server code is being run on - helpful if developing on synthscape and running on server",
     )
     parser.add_argument(
