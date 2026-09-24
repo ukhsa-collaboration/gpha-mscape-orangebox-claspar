@@ -57,13 +57,23 @@ Be sure to install the pre-commit hooks in the repo if developing and pushing to
 If running unit tests, the taxids have been tested against the NCBI taxdump from 2026-03-01. If running against an older
 taxonomy database version, some taxon IDs might cause tests to fail.
 
-The tests use the base `~/.taxaplease/taxa.db` taxaplease database. There is a test in test_main.py that will print the
-version of the available taxaplease database. If there is not one available, taxaplease will just download the most recent
-version, and the url printed by this unit test will be `https://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz`.
+The tests use the base `~/.taxaplease/taxa.db` taxaplease database. If there is not one available, taxaplease will just
+download the most recent taxonomy database version from NCBI and create taxa.db.
 
-Ideally, download a Taxaplease database using this command on the command line after installing claspar:
+There is a test in test_main.py that will print the version of the available taxaplease database. If tests are failing,
+check the taxaplease version with:
+
+`pytest -s tests/test_main.py::test_taxaplease`
+
+If this unit tests returns `https://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz`, this was likely automatically
+downloaded by taxaplease.
+If this unit test returns `None`, there is a likely an old version of the `taxa.db` without the version metadata stored
+in the database.
+
+In either of these cases, download a Taxaplease database using this command on the command line after installing claspar:
 `taxaplease taxonomy --set https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump_archive/new_taxdump_2026-03-01.zip`
 
+Rerun unit tests using `pytest .`, tests should no longer fail on taxon IDs.
 
 ## 🖱️ Usage 🖱️
 
