@@ -14,6 +14,14 @@ with PATH_TO_TEST_DATA.open("r") as metadata:
     MOCK_ONYX_RECORD = json.load(metadata)
 
 
+def test_taxaplease():
+    from taxaplease import TaxaPlease
+
+    tp = TaxaPlease()
+    print("Your taxaplease database version is: ")
+    print(tp.get_current_taxonomy_url_from_database())
+
+
 @patch("onyx_analysis_helper.onyx_analysis_helper_functions.OnyxClient.get")
 @patch(
     "argparse.ArgumentParser.parse_args",
