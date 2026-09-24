@@ -7,6 +7,13 @@ Allow devscape and bumped onnyx analysis helper
 - version of onyx analysis helper changed to v0.6.5.
 - CL server arg allows devscape.
 
+### Fixed:
+- breaking unit test looking for 'orthohepacivirus' only available in newest database. Now checks for herpes virus as per the 2026 database.
+
+### Added:
+- information in readme about taxaplease database versioning when running pytests to avoid failing tests based on changed taxon IDs across taxonomy versions.
+- commented out code in conftest.py that allows the database to be downloaded on pytest into a temp dir, but download is large and takes a long time. Kept for reference.
+
 ---
 ---
 
