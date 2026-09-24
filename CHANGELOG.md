@@ -8,7 +8,7 @@ Allow devscape and bumped onnyx analysis helper
 - CL server arg allows devscape.
 
 ### Fixed:
-- breaking unit test looking for 'orthohepacivirus' only available in newest database. Now checks for 'Hepacivirus' as per the 2026 database.
+- breaking unit test looking for 'orthohepacivirus' only available in newest database. Now checks for herpes virus as per the 2026 database.
 
 ### Added:
 - information in readme about taxaplease database versioning when running pytests to avoid failing tests based on changed taxon IDs across taxonomy versions.

@@ -107,7 +107,7 @@ class TestKrakenBacteria:
             (139, True, 64895, "Borreliella"),
             (1410656, True, 859, "Fusobacterium necrophorum"),
             (2696357, False, 2788787, "unclassified Caudoviricetes"),
-            (3052230, False, 11102, "Hepacivirus"),
+            (10298, False, 3050292, "Simplexvirus humanalpha1"),
         ],
     )
     def test__get_parent_taxonomy(self, taxonid, isbacteria, parent_id, parent_name):
