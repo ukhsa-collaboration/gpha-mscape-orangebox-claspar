@@ -16,7 +16,9 @@ file can be defined).
 
 It uses the OnyxAnalysisHelper to write all the results to json files, was well as all the results to csv files.
 
-It uses the Profiler codebase (pinned to v1.0.0) to lookup classified taxa in the clinical profile tables.
+It uses the Profiler codebase (pinned to v2.0.0) to lookup classified taxa in the clinical profile tables.
+
+It uses TaxaPlease to wrangle taxonomy (pinned to v2.2.1).
 
 ## 🔧 Installation for Command Line Use 🔧
 1) Set up environment - It is recommended that you install claspar into a suitable environment. For example:
