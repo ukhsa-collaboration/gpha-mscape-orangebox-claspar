@@ -1,6 +1,6 @@
-###############
-ClasPar - Virus
-###############
+#####
+Virus
+#####
 
 .. automodule:: claspar.virus
    :members:

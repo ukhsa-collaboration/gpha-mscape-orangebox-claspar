@@ -1,6 +1,6 @@
-##################
-ClasPar - Bacteria
-##################
+########
+Bacteria
+########
 
 .. automodule:: claspar.bacteria
    :members:

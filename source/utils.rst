@@ -1,6 +1,6 @@
-###############
-ClasPar - utils
-###############
+#####
+utils
+#####
 
 .. automodule:: claspar.utils
    :members:
