@@ -3,7 +3,7 @@ name = "ClasPar"
 dynamic = ["version"]
 description = "ClasPar: the friendly classifier parser that parses, filters and writes classifier results to analysis tables."
 authors = [{ name = "Jess Friedersdorff", email = "jess.friedersdorff@ukhsa.gov.uk" }]
-requires-python = ">=3.12"
+requires-python = ">=3.14.10"
 dependencies = [
     "pandas",
     "pyyaml",
@@ -22,7 +22,7 @@ where = ["src"]
 "claspar.data" = ["*.yaml"]
 
 [project.optional-dependencies] # Dependencies for developers only - add more if required
-dev = ["ruff", "pytest", "pre-commit"]
+dev = ["ruff", "pytest", "pre-commit", "pytest-cov"]
 
 [build-system] # Leave this section
 requires = ["setuptools"]
