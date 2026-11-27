@@ -22,19 +22,13 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    - name: Set up Python 3.12
+    - name: Set up Python 3.14
       uses: actions/setup-python@v3
       with:
-        python-version: "3.12"
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pandas pyyaml climb-onyx-client
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Install code base
+        python-version: "3.14"
+    - name: Install codebase
       run: pip install .
-    - name: Install tests and linter
-      run: pip install ruff pytest pytest-cov
+
     - name: Lint with ruff
       run: |
         # Stop the build if there are Python syntax errors
