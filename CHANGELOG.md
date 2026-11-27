@@ -1,5 +1,17 @@
 # Changelog
 
+## Claspar v3.0.2
+Bumped python version for security updates
+
+### Changed:
+- python version in the pyproject.toml, dockerfile, github workflow build yamls.
+
+### Fixed:
+- deprecated pandas warning appeared in test-bacteria.py; complaining about types so made the dataframe type object.
+
+---
+---
+
 ## Claspar v3.0.1
 Allow devscape and bumped onnyx analysis helper
 
