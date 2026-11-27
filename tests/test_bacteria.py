@@ -453,6 +453,7 @@ class TestSylphBacteria:
     @pytest.fixture(autouse=True)
     def test_instance_2(self):
         sylph_test_df_edited = self.sylph_test_df.copy()
+        sylph_test_df_edited = sylph_test_df_edited.astype(object)
         # add a match at the genus level
         sylph_test_df_edited.loc[3] = [
             "838",
